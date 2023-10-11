@@ -7,44 +7,35 @@ public class Main {
     public static void main(String[] args) {
         TasksManager manager = new TasksManager();
 
-//        Task task1 = new Task("Task 1", "This is task 1. it has status new");
-//        Task task2 = new Task("Task 2", "This is task 2. it has status done");
-//        Task task3 = new Task("Task 3", "This is task 3. it has status inProgress");
-//        Task taskForUpdate = new Task("Task for update", "This is task for update. it has status inProgress");
+//        System.out.println("---------------------------------- Task -----------------------------------------");
 //
-//        manager.createTask(task1);
-//        manager.createTask(task2);
-//        manager.createTask(task3);
+//        manager.createTask(new Task("Task 1", "this is task number 1", Status.NEW));
+//        manager.createTask(new Task("Task 2", "this is task number 2", Status.NEW));
 //
+//        System.out.println("Print list with 2 tasks");
 //        System.out.println(manager.getTasksList());
 //
-//        manager.getTaskByIndex(1);
-//        manager.updateTask(1, taskForUpdate);
+//        System.out.println("Print task with id 1");
+//        System.out.println(manager.getTaskByIndex(1));
 //
-//        System.out.println(manager.getTasksList());
+//        System.out.println("Print updated task. Name, description and status should be changed, id 1");
+//        System.out.println(manager.updateTask(1, new Task("Updated task", "this is updated",
+//                Status.IN_PROGRESS)));
 //
-//        manager.deleteTask(1);
+//        System.out.println("Print list only with 1 task, id 1");
+//        System.out.println(manager.deleteTaskByIndex(0));
 //
-//        System.out.println(manager.getTasksList());
-//
-//        manager.deleteAllTasks();
-//
-//        System.out.println(manager.getTasksList());
+//        System.out.println("Print empty list");
+//        System.out.println(manager.deleteAllTasks());
 
-//        Epic epic = new Epic("Epic 1", "ejhdsalkjhgfsdakhf", Status.NEW, new ArrayList<>());
-//
-//        manager.createEpic(epic);
-//
-//        System.out.println(manager.getEpicsList());
+        System.out.println("---------------------------------- Epic + Subtasks --------------------------------");
 
+        manager.createEpic(new Epic("Epic 1", "This is epic 1", Status.NEW));
+        manager.createEpic(new Epic("Epic 12", "This is epic 12", Status.NEW));
 
-        ArrayList<Integer> asi = new ArrayList<>();
-        asi.add(3);
-        asi.add(4);
-        System.out.println(asi);
-        asi.remove(Integer.valueOf(9));
-        System.out.println(asi);
+        System.out.println(manager.getEpicsList());
 
+        manager.createSubTask(new SubTask("Subtask 1", "this is subtask 1", Status.NEW, 0));
 
     }
 }

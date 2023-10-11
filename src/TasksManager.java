@@ -41,11 +41,11 @@ public class TasksManager {
         return task.getId();
     }
 
-    public Object updateTask(int id, Task task) {
+    public Task updateTask(int id, Task task) {
         if (tasksList.containsKey(id)) {
             task.setId(id);
             tasksList.put(task.getId(), task);
-            return id;
+            return tasksList.get(id);
         }
         return null;
     }
@@ -62,7 +62,7 @@ public class TasksManager {
     }
 
     /**
-     * Метод удаляет все подзадачи из эпиков
+     * Метод удаляет все подзадачи из эпиков, меняет статус эпика на 'NEW'
      * Затем очищает лист подзадач
      * @return Пустой лист подзадач
      */
@@ -70,7 +70,7 @@ public class TasksManager {
         for (Integer subTaskId: subTasksList.keySet()) {
             for (Epic epic: epicsList.values()) {
                 epic.getSubTasks().remove(subTaskId);
-                updateEpic(epic.getId(), epic);
+                epic.setStatus(Status.NEW);
             }
         }
         subTasksList.clear();
@@ -96,6 +96,11 @@ public class TasksManager {
         if (subTasksList.containsKey(id)) {
             subTask.setId(id);
             subTasksList.put(subTask.getId(), subTask);
+            for (Epic epic: epicsList.values()) {
+                if (epic.getSubTasks().contains(id)) {
+                    setEpicStatus(epic);
+                }
+            }
             return id;
         }
         return null;
@@ -109,7 +114,7 @@ public class TasksManager {
     public HashMap<Integer, SubTask> deleteSubTaskByIndex(int id) {
         for (Epic epic: epicsList.values()) {
             epic.getSubTasks().remove(Integer.valueOf(id));
-            updateEpic(epic.getId(), epic);
+            setEpicStatus(epic);
         }
         subTasksList.remove(id);
         return subTasksList;
