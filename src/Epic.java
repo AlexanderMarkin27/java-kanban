@@ -1,4 +1,4 @@
-import util.Status;
+import enums.Status;
 
 import java.util.ArrayList;
 
@@ -11,15 +11,16 @@ public class Epic extends Task{
         this.subTasks = new ArrayList<>();
     }
 
-//    @Override
-//    public String toString() {
-//        return "Task{" +
-//                "name='" +  + '\'' +
-//                ", description='" + description + '\'' +
-//                ", id=" + id +
-//                ", status=" + status +
-//                '}';
-//    }
+    @Override
+    public String toString() {
+        return  "Epic{" +
+                "name='" + this.getName() + '\'' +
+                ", description='" + this.getDescription() + '\'' +
+                ", id=" + this.getId() +
+                ", status=" + this.getStatus() +
+                ", subTasks=" + this.subTasks +
+                '}';
+    }
 
     public ArrayList<Integer> getSubTasks() {
         return subTasks;
