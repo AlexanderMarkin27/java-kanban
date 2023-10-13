@@ -1,4 +1,6 @@
-import enums.Status;
+package com.yandex.taskTracker.model;
+
+import com.yandex.taskTracker.enums.Status;
 
 public class Task {
     private String name;

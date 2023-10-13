@@ -1,4 +1,9 @@
-import enums.Status;
+package com.yandex.taskTracker.service;
+
+import com.yandex.taskTracker.enums.Status;
+import com.yandex.taskTracker.model.Epic;
+import com.yandex.taskTracker.model.SubTask;
+import com.yandex.taskTracker.model.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +34,7 @@ public class TasksManager {
     public Task getTaskByIndex(int id) {
         try {
             return tasksList.get(id);
-        } catch (Exception e) {
+        } catch (Exception ex) {
             return null;
         }
     }
@@ -78,19 +83,23 @@ public class TasksManager {
     public SubTask getSubTaskByIndex(int id) {
         try {
             return subTasksList.get(id);
-        } catch (Exception e) {
+        } catch (Exception ex) {
             return null;
         }
     }
 
     public Integer createSubTask(SubTask subTask) {
-        subTask.setId(index);
-        subTasksList.put(subTask.getId(), subTask);
-        Epic epic = epicsList.get(subTask.getEpicId());
-        epic.getSubTasks().add(subTask.getId());
-        updateEpic(epic.getId(), epic);
-        index++;
-        return subTask.getId();
+        try {
+            subTask.setId(index);
+            subTasksList.put(subTask.getId(), subTask);
+            Epic epic = epicsList.get(subTask.getEpicId());
+            epic.getSubTasks().add(subTask.getId());
+            updateEpic(epic.getId(), epic);
+            index++;
+            return subTask.getId();
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     public Object updateSubTask(int id, SubTask subTask) {
@@ -141,7 +150,7 @@ public class TasksManager {
     public Epic getEpicByIndex(int id) {
         try {
             return epicsList.get(id);
-        } catch (Exception e) {
+        } catch (Exception ex) {
             return null;
         }
     }
@@ -165,22 +174,30 @@ public class TasksManager {
     }
 
     public HashMap<Integer, Epic> deleteEpicByIndex(int id) {
-        for (Integer subTaskId: epicsList.get(id).getSubTasks()) {
-            subTasksList.remove(subTaskId);
+        try {
+            for (Integer subTaskId: epicsList.get(id).getSubTasks()) {
+                subTasksList.remove(subTaskId);
+            }
+            epicsList.remove(id);
+            return epicsList;
+        } catch (Exception ex) {
+            return null;
         }
-        epicsList.remove(id);
-        return epicsList;
+
     }
 
     public ArrayList<SubTask> getSubTasksByEpic(int epicId) {
-        ArrayList<SubTask> epicSubTasks = new ArrayList<>(epicsList.get(epicId).getSubTasks().size());
-        for (int subTaskId: epicsList.get(epicId).getSubTasks()) {
-            epicSubTasks.add(subTasksList.get(subTaskId));
+        try {
+            ArrayList<SubTask> epicSubTasks = new ArrayList<>(epicsList.get(epicId).getSubTasks().size());
+            for (int subTaskId: epicsList.get(epicId).getSubTasks()) {
+                epicSubTasks.add(subTasksList.get(subTaskId));
+            }
+            return epicSubTasks;
+        } catch (Exception ex) {
+            return null;
         }
-        return epicSubTasks;
+
     }
-
-
 
     private void setEpicStatus(Epic epic) {
         if (epicHasNoSubTasks(epic) || checkSubtasksStatus(epic.getSubTasks(), Status.NEW)) {
@@ -204,18 +221,4 @@ public class TasksManager {
         }
         return true;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

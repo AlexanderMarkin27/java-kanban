@@ -1,4 +1,4 @@
-package enums;
+package com.yandex.taskTracker.enums;
 
 public enum Status {
     NEW,

@@ -1,5 +1,6 @@
-import enums.Status;
+package com.yandex.taskTracker.model;
 
+import com.yandex.taskTracker.enums.Status;
 import java.util.ArrayList;
 
 public class Epic extends Task{

@@ -1,4 +1,8 @@
-import enums.Status;
+import com.yandex.taskTracker.enums.Status;
+import com.yandex.taskTracker.model.Epic;
+import com.yandex.taskTracker.model.SubTask;
+import com.yandex.taskTracker.model.Task;
+import com.yandex.taskTracker.service.TasksManager;
 
 public class Main {
 
@@ -7,8 +11,8 @@ public class Main {
 
         System.out.println("---------------------------------- Task -----------------------------------------");
 
-        manager.createTask(new Task("Task 1", "this is task number 1", Status.NEW));
-        manager.createTask(new Task("Task 2", "this is task number 2", Status.NEW));
+        manager.createTask(new Task("com.yandex.taskTracker.model.Task 1", "this is task number 1", Status.NEW));
+        manager.createTask(new Task("com.yandex.taskTracker.model.Task 2", "this is task number 2", Status.NEW));
 
         System.out.println(manager.getTasksList());
 
@@ -21,10 +25,10 @@ public class Main {
 
         System.out.println(manager.deleteAllTasks());
 
-        System.out.println("---------------------------------- Epic + Subtasks --------------------------------");
+        System.out.println("---------------------------------- Subtasks --------------------------------");
 
-        manager.createEpic(new Epic("Epic 1", "This is epic 1", Status.NEW));
-        manager.createEpic(new Epic("Epic 12", "This is epic 12", Status.NEW));
+        manager.createEpic(new Epic("com.yandex.taskTracker.model.Epic 1", "This is epic 1", Status.NEW));
+        manager.createEpic(new Epic("com.yandex.taskTracker.model.Epic 12", "This is epic 12", Status.NEW));
 
 
 
