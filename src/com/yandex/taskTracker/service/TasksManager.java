@@ -22,13 +22,12 @@ public class TasksManager {
     }
 
     /* Функции для задач */
-    public HashMap<Integer, Task> getTasksList() {
-        return tasksList;
+    public ArrayList<Task> getTasksList() {
+        return new ArrayList<>(tasksList.values());
     }
 
-    public HashMap<Integer, Task> deleteAllTasks() {
+    public void deleteAllTasks() {
         tasksList.clear();
-        return tasksList;
     }
 
     public Task getTaskByIndex(int id) {
@@ -62,8 +61,8 @@ public class TasksManager {
 
     /* Функции для подзадач */
 
-    public HashMap<Integer, SubTask> getSubTasksList() {
-        return subTasksList;
+    public ArrayList<SubTask> getSubTasksList() {
+        return new ArrayList<>(subTasksList.values());
     }
 
     /**
@@ -71,13 +70,12 @@ public class TasksManager {
      * Затем очищает лист подзадач
      * @return Пустой лист подзадач
      */
-    public HashMap<Integer, SubTask> deleteAllSubTasks() {
+    public void deleteAllSubTasks() {
         for (Epic epic: epicsList.values()) {
             epic.getSubTasks().clear();
             setEpicStatus(epic);
         }
         subTasksList.clear();
-        return subTasksList;
     }
 
     public SubTask getSubTaskByIndex(int id) {
@@ -132,8 +130,8 @@ public class TasksManager {
 
     /* Функции для эпиков */
 
-    public HashMap<Integer, Epic> getEpicsList() {
-        return epicsList;
+    public ArrayList<Epic> getEpicsList() {
+        return new ArrayList<>(epicsList.values());
     }
 
     /**
@@ -141,10 +139,9 @@ public class TasksManager {
      * После очищает лист эпиков
      * @return Пустой лист эпиков
      */
-    public HashMap<Integer, Epic> deleteAllEpics() {
+    public void deleteAllEpics() {
         subTasksList.clear();
         epicsList.clear();
-        return epicsList;
     }
 
     public Epic getEpicByIndex(int id) {

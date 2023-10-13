@@ -23,7 +23,9 @@ public class Main {
 
         System.out.println(manager.deleteTaskByIndex(0));
 
-        System.out.println(manager.deleteAllTasks());
+        manager.deleteAllTasks();
+
+        System.out.println(manager.getTasksList());
 
         System.out.println("---------------------------------- Subtasks --------------------------------");
 
@@ -60,10 +62,10 @@ public class Main {
 
         System.out.println(manager.getSubTasksByEpic(0));
 
-        System.out.println(manager.deleteAllSubTasks());
+        manager.deleteAllSubTasks();
         System.out.println(manager.getEpicsList());
 
-
-        System.out.println( manager.deleteAllEpics());
+        manager.deleteAllEpics();
+        System.out.println(manager.getEpicsList());
     }
 }
