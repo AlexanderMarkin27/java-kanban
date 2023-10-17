@@ -9,63 +9,76 @@ public class Main {
     public static void main(String[] args) {
         TasksManager manager = new TasksManager();
 
-        System.out.println("---------------------------------- Task -----------------------------------------");
+        /* Tasks */
+//        Task taskForDelete = new Task("Task for delete", "this is task for delete", Status.NEW);
+//        Task taskForUpdate = new Task("task for update", "this is task for update", Status.NEW);
+//        Task updatedTask = new Task("updated Task", "this is updated Task", Status.IN_PROGRESS);
+//
+//        int indexTaskForDelete = manager.createTask(taskForDelete);
+//        int indexTask4Update = manager.createTask(taskForUpdate);
+//
+//        System.out.println(manager.getTasksList());
+//
+//        updatedTask.setId(indexTask4Update);
+//
+//        int indexUpdatedTask = manager.updateTask(updatedTask);
+//        System.out.println(manager.getTaskByIndex(indexUpdatedTask));
+//
+//        manager.deleteTaskByIndex(indexTaskForDelete);
+//
+//        System.out.println(manager.getTaskByIndex(indexTaskForDelete));
+//        System.out.println(manager.getTasksList());
+//
+//        manager.deleteAllTasks();
+//        System.out.println(manager.getTasksList());
 
-        manager.createTask(new Task("com.yandex.taskTracker.model.Task 1", "this is task number 1", Status.NEW));
-        manager.createTask(new Task("com.yandex.taskTracker.model.Task 2", "this is task number 2", Status.NEW));
+        /* Epics + SubTasks */
 
-        System.out.println(manager.getTasksList());
+        Epic epicForDelete = new Epic("Epic for Delete", "this is epic for delete");
+        Epic epicForUpdate = new Epic("epic for Update", "this is epic for update");
+        Epic updatedEpic = new Epic("updated epic", "this is updated epic");
 
-        System.out.println(manager.getTaskByIndex(1));
+        int indexEpicForDelete = manager.createEpic(epicForDelete);
+        int indexEpicForUpdate = manager.createEpic(epicForUpdate);
 
-        System.out.println(manager.updateTask(1, new Task("Updated task", "this is updated",
-                Status.IN_PROGRESS)));
+        SubTask subTask1 = new SubTask("subtask 1", "this is subtask 1", Status.NEW, indexEpicForUpdate);
+        SubTask subTask2 = new SubTask("subtask 2", "this is subtask 2", Status.NEW, indexEpicForUpdate);
 
-        System.out.println(manager.deleteTaskByIndex(0));
+        SubTask subTaskForDelete = new SubTask("subtask for delete", "this is subtask for delete", Status.NEW, indexEpicForDelete);
+        SubTask subTaskForDelete2 = new SubTask("subtask for delete2", "this is subtask for delete2", Status.NEW, indexEpicForDelete);
 
-        manager.deleteAllTasks();
+        SubTask updatedSubTask = new SubTask("updated Subtask", "this is updated subtask", Status.IN_PROGRESS, indexEpicForUpdate);
 
-        System.out.println(manager.getTasksList());
+        int indexSubTask1 = manager.createSubTask(subTask1);
+        int indexSubTask2 = manager.createSubTask(subTask2);
 
-        System.out.println("---------------------------------- Subtasks --------------------------------");
+        System.out.println(manager.getEpicByIndex(indexEpicForUpdate));
 
-        manager.createEpic(new Epic("com.yandex.taskTracker.model.Epic 1", "This is epic 1", Status.NEW));
-        manager.createEpic(new Epic("com.yandex.taskTracker.model.Epic 12", "This is epic 12", Status.NEW));
+        updatedSubTask.setId(indexSubTask1);
 
+        manager.updateSubTask(updatedSubTask);
 
+        System.out.println(manager.getEpicByIndex(indexEpicForUpdate));
 
-        manager.createSubTask(new SubTask("Subtask 1", "this is subtask 1", Status.NEW, 0));
-        manager.createSubTask(new SubTask("Subtask 2", "this is subtask 2", Status.NEW, 0));
-        manager.createSubTask(new SubTask("Subtask 3", "this is subtask 3", Status.IN_PROGRESS, 1));
+        SubTask updatedSubTask2 = new SubTask("updated Subtask2", "this is updated Subtask 2", Status.DONE, indexEpicForUpdate);
+        SubTask updatedSubTask3 = new SubTask("updated Subtask3", "this is updated Subtask 3", Status.DONE, indexEpicForUpdate);
 
-        System.out.println(manager.getSubTasksList());
-        System.out.println(manager.getEpicsList());
+        updatedSubTask2.setId(indexSubTask1);
+        updatedSubTask3.setId(indexSubTask2);
 
-        manager.updateSubTask(3, new SubTask("Subtask 1", "this is subtask 1", Status.IN_PROGRESS, 0));
-        manager.updateSubTask(4, new SubTask("Subtask 51", "subtask done", Status.DONE, 1));
+        int indexUpdatedSubTask2 = manager.updateSubTask(updatedSubTask2);
+        int indexUpdatedSubTask3 = manager.updateSubTask(updatedSubTask3);
 
-        System.out.println(manager.getSubTasksList());
-        System.out.println(manager.getEpicsList());
+        System.out.println(manager.getSubTaskByIndex(indexUpdatedSubTask2));
+        System.out.println(manager.getSubTaskByIndex(indexUpdatedSubTask3));
 
-        System.out.println(manager.getSubTaskByIndex(4));
-        System.out.println(manager.getEpicByIndex(0));
-
-        manager.deleteEpicByIndex(1);
-
-        System.out.println(manager.getSubTasksList());
-        System.out.println(manager.getEpicsList());
-
-        manager.deleteSubTaskByIndex(3);
-
-        System.out.println(manager.getSubTasksList());
-        System.out.println(manager.getEpicsList());
-
-        System.out.println(manager.getSubTasksByEpic(0));
+        System.out.println(manager.getEpicByIndex(indexEpicForUpdate));
 
         manager.deleteAllSubTasks();
-        System.out.println(manager.getEpicsList());
 
-        manager.deleteAllEpics();
-        System.out.println(manager.getEpicsList());
+        System.out.println(manager.getEpicByIndex(indexEpicForUpdate));
+
+
+
     }
 }

@@ -5,8 +5,14 @@ import com.yandex.taskTracker.enums.Status;
 public class Task {
     private String name;
     private String description;
-    private int id;
+    private Integer id;
     private Status status;
+
+    public Task(String name, String description, Status status) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+    }
 
     public String getName() {
         return name;
@@ -16,11 +22,12 @@ public class Task {
         return description;
     }
 
-    public Task(String name, String description, Status status) {
+    public void setName(String name) {
         this.name = name;
+    }
+
+    public void setDescription(String description) {
         this.description = description;
-        this.id = 0;
-        this.status = status;
     }
 
     public int getId() {
