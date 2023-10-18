@@ -12,7 +12,7 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return  "Epic{" +
+        return  "SubTask{" +
                 "name='" + this.getName() + '\'' +
                 ", description='" + this.getDescription() + '\'' +
                 ", id=" + this.getId() +
