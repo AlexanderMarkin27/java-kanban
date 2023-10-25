@@ -8,32 +8,36 @@ import com.yandex.taskTracker.model.Task;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TasksManager {
+public class InMemoryTaskManager implements TaskManager {
     private int index = 0;
     private HashMap<Integer, Task> tasksList;
     private HashMap<Integer, Epic> epicsList;
     private HashMap<Integer, SubTask> subTasksList;
 
 
-    public TasksManager() {
+    public InMemoryTaskManager() {
         tasksList = new HashMap<>();
         epicsList = new HashMap<>();
         subTasksList = new HashMap<>();
     }
 
     /* Функции для задач */
+    @Override
     public ArrayList<Task> getTasksList() {
         return new ArrayList<>(tasksList.values());
     }
 
+    @Override
     public void deleteAllTasks() {
         tasksList.clear();
     }
 
+    @Override
     public Task getTaskByIndex(int id) {
         return tasksList.get(id);
     }
 
+    @Override
     public Integer createTask(Task task) {
         int id = getIndex();
         task.setId(id);
@@ -41,6 +45,7 @@ public class TasksManager {
         return task.getId();
     }
 
+    @Override
     public Integer updateTask(Task task) {
         if (tasksList.containsKey(task.getId())) {
             tasksList.put(task.getId(), task);
@@ -49,12 +54,14 @@ public class TasksManager {
         return null;
     }
 
+    @Override
     public void deleteTaskByIndex(int id) {
         tasksList.remove(id);
     }
 
     /* Функции для подзадач */
 
+    @Override
     public ArrayList<SubTask> getSubTasksList() {
         return new ArrayList<>(subTasksList.values());
     }
@@ -64,6 +71,7 @@ public class TasksManager {
      * Затем очищает лист подзадач
      * @return Пустой лист подзадач
      */
+    @Override
     public void deleteAllSubTasks() {
         for (Epic epic: epicsList.values()) {
             epic.getSubTasks().clear();
@@ -72,10 +80,12 @@ public class TasksManager {
         subTasksList.clear();
     }
 
+    @Override
     public SubTask getSubTaskByIndex(int id) {
         return subTasksList.get(id);
     }
 
+    @Override
     public Integer createSubTask(SubTask subTask) {
         try {
             int id = getIndex();
@@ -90,6 +100,7 @@ public class TasksManager {
         }
     }
 
+    @Override
     public Integer updateSubTask(SubTask subTask) {
         try {
             subTasksList.put(subTask.getId(), subTask);
@@ -106,6 +117,7 @@ public class TasksManager {
      * Затем удаляет саму подзадачу
      * @return лист подзадач
      */
+    @Override
     public void deleteSubTaskByIndex(int id) {
         if (subTasksList.get(id) != null) {
             int epicId = subTasksList.get(id).getEpicId();
@@ -117,6 +129,7 @@ public class TasksManager {
 
     /* Функции для эпиков */
 
+    @Override
     public ArrayList<Epic> getEpicsList() {
         return new ArrayList<>(epicsList.values());
     }
@@ -126,15 +139,18 @@ public class TasksManager {
      * После очищает лист эпиков
      * @return Пустой лист эпиков
      */
+    @Override
     public void deleteAllEpics() {
         subTasksList.clear();
         epicsList.clear();
     }
 
+    @Override
     public Epic getEpicByIndex(int id) {
         return epicsList.get(id);
     }
 
+    @Override
     public Integer createEpic(Epic epic) {
         int id = getIndex();
         epic.setId(id);
@@ -142,6 +158,7 @@ public class TasksManager {
         return epic.getId();
     }
 
+    @Override
     public Integer updateEpic(Epic epic) {
         try {
             epicsList.get(epic.getId()).setName(epic.getName());
@@ -152,6 +169,7 @@ public class TasksManager {
         }
     }
 
+    @Override
     public void deleteEpicByIndex(int id) {
         try {
             for (Integer subTaskId: epicsList.get(id).getSubTasks()) {
@@ -164,6 +182,7 @@ public class TasksManager {
 
     }
 
+    @Override
     public ArrayList<SubTask> getSubTasksByEpic(int epicId) {
         try {
             ArrayList<SubTask> epicSubTasks = new ArrayList<>(epicsList.get(epicId).getSubTasks().size());
