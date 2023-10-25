@@ -2,12 +2,12 @@ import com.yandex.taskTracker.enums.Status;
 import com.yandex.taskTracker.model.Epic;
 import com.yandex.taskTracker.model.SubTask;
 import com.yandex.taskTracker.model.Task;
-import com.yandex.taskTracker.service.TasksManager;
+import com.yandex.taskTracker.service.InMemoryTaskManager;
 
 public class Main {
 
     public static void main(String[] args) {
-        TasksManager manager = new TasksManager();
+        InMemoryTaskManager manager = new InMemoryTaskManager();
 
         /* Tasks */
         Task taskForDelete = new Task("Task for delete", "this is task for delete", Status.NEW);
