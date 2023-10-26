@@ -4,6 +4,7 @@ import com.yandex.taskTracker.enums.Status;
 import com.yandex.taskTracker.model.Epic;
 import com.yandex.taskTracker.model.SubTask;
 import com.yandex.taskTracker.model.Task;
+import com.yandex.taskTracker.utils.Managers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,8 +16,7 @@ public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Epic> epicsList;
     private HashMap<Integer, SubTask> subTasksList;
 
-    private List<Task> tasksHistory = new ArrayList<>();
-
+    private HistoryManager historyManager = Managers.getDefaultHistory();
 
     public InMemoryTaskManager() {
         tasksList = new HashMap<>();
@@ -37,7 +37,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTaskByIndex(int id) {
-        addTaskInHistory(tasksList.get(id));
+        historyManager.add(tasksList.get(id));
         return tasksList.get(id);
     }
 
@@ -86,7 +86,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public SubTask getSubTaskByIndex(int id) {
-        addTaskInHistory(subTasksList.get(id));
+        historyManager.add(subTasksList.get(id));
         return subTasksList.get(id);
     }
 
@@ -152,7 +152,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic getEpicByIndex(int id) {
-        addTaskInHistory(epicsList.get(id));
+        historyManager.add(epicsList.get(id));
         return epicsList.get(id);
     }
 
@@ -204,12 +204,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getHistory() {
-        for (Task task: tasksHistory) {
-            if (task == null) {
-                tasksHistory.remove(null);
-            }
-        }
-        return tasksHistory;
+        return historyManager.getHistory();
     }
 
     private void setEpicStatus(Epic epic) {
@@ -239,17 +234,5 @@ public class InMemoryTaskManager implements TaskManager {
     private int getIndex() {
         index++;
         return index;
-    }
-
-    private void addTaskInHistory(Task task) {
-        if (task != null) {
-            if (tasksHistory.size() < 10) {
-                tasksHistory.add(task);
-            } else {
-                tasksHistory.remove(0);
-                tasksHistory.add(task);
-            }
-        }
-
     }
 }
