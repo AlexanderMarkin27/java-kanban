@@ -43,8 +43,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Integer createTask(Task task) {
-        int id = getIndex();
-        task.setId(id);
+        task.setId(getIndex());
         tasksList.put(task.getId(), task);
         return task.getId();
     }
@@ -93,8 +92,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Integer createSubTask(SubTask subTask) {
         try {
-            int id = getIndex();
-            subTask.setId(id);
+            subTask.setId(getIndex());
             subTasksList.put(subTask.getId(), subTask);
             Epic epic = epicsList.get(subTask.getEpicId());
             epic.getSubTasks().add(subTask.getId());
@@ -158,8 +156,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Integer createEpic(Epic epic) {
-        int id = getIndex();
-        epic.setId(id);
+        epic.setId(getIndex());
         epicsList.put(epic.getId(), epic);
         return epic.getId();
     }
