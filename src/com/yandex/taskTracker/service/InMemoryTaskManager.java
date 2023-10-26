@@ -7,12 +7,15 @@ import com.yandex.taskTracker.model.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private int index = 0;
     private HashMap<Integer, Task> tasksList;
     private HashMap<Integer, Epic> epicsList;
     private HashMap<Integer, SubTask> subTasksList;
+
+    private List<Task> tasksHistory = new ArrayList<>();
 
 
     public InMemoryTaskManager() {
@@ -34,6 +37,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTaskByIndex(int id) {
+        addTaskInHistory(tasksList.get(id));
         return tasksList.get(id);
     }
 
@@ -82,6 +86,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public SubTask getSubTaskByIndex(int id) {
+        addTaskInHistory(subTasksList.get(id));
         return subTasksList.get(id);
     }
 
@@ -147,6 +152,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic getEpicByIndex(int id) {
+        addTaskInHistory(epicsList.get(id));
         return epicsList.get(id);
     }
 
@@ -196,6 +202,16 @@ public class InMemoryTaskManager implements TaskManager {
 
     }
 
+    @Override
+    public List<Task> getHistory() {
+        for (Task task: tasksHistory) {
+            if (task == null) {
+                tasksHistory.remove(null);
+            }
+        }
+        return tasksHistory;
+    }
+
     private void setEpicStatus(Epic epic) {
         int statusNewCounter = 0;
         int statusDoneCounter = 0;
@@ -223,5 +239,17 @@ public class InMemoryTaskManager implements TaskManager {
     private int getIndex() {
         index++;
         return index;
+    }
+
+    private void addTaskInHistory(Task task) {
+        if (task != null) {
+            if (tasksHistory.size() < 10) {
+                tasksHistory.add(task);
+            } else {
+                tasksHistory.remove(0);
+                tasksHistory.add(task);
+            }
+        }
+
     }
 }

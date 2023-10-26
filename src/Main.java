@@ -105,6 +105,8 @@ public class Main {
         System.out.println(manager.getSubTasksList());
         System.out.println(manager.getEpicsList());
 
+        System.out.println(manager.getHistory());
+
 
 
     }
