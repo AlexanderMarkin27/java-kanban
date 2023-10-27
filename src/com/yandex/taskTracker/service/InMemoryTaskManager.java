@@ -9,12 +9,13 @@ import com.yandex.taskTracker.utils.Managers;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
     private int index = 0;
-    private HashMap<Integer, Task> tasksList;
-    private HashMap<Integer, Epic> epicsList;
-    private HashMap<Integer, SubTask> subTasksList;
+    private Map<Integer, Task> tasksList;
+    private Map<Integer, Epic> epicsList;
+    private Map<Integer, SubTask> subTasksList;
 
     private HistoryManager historyManager = Managers.getDefaultHistory();
 
