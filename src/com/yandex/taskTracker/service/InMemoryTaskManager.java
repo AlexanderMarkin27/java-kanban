@@ -33,6 +33,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTasks() {
+        for (int taskId: tasksList.keySet()) {
+            historyManager.remove(taskId);
+        }
         tasksList.clear();
     }
 
@@ -60,6 +63,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTaskByIndex(int id) {
+        historyManager.remove(id);
         tasksList.remove(id);
     }
 
@@ -80,6 +84,9 @@ public class InMemoryTaskManager implements TaskManager {
         for (Epic epic: epicsList.values()) {
             epic.getSubTasks().clear();
             epic.setStatus(Status.NEW);
+        }
+        for (int subTasksId: subTasksList.keySet()) {
+            historyManager.remove(subTasksId);
         }
         subTasksList.clear();
     }
@@ -127,6 +134,7 @@ public class InMemoryTaskManager implements TaskManager {
             int epicId = subTasksList.get(id).getEpicId();
             epicsList.get(epicId).getSubTasks().remove(Integer.valueOf(id));
             setEpicStatus(epicsList.get(epicId));
+            historyManager.remove(id);
             subTasksList.remove(id);
         }
     }
@@ -145,7 +153,13 @@ public class InMemoryTaskManager implements TaskManager {
      */
     @Override
     public void deleteAllEpics() {
+        for (int subTasksId: subTasksList.keySet()) {
+            historyManager.remove(subTasksId);
+        }
         subTasksList.clear();
+        for (int epicId: epicsList.keySet()) {
+            historyManager.remove(epicId);
+        }
         epicsList.clear();
     }
 
@@ -177,8 +191,10 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteEpicByIndex(int id) {
         try {
             for (Integer subTaskId: epicsList.get(id).getSubTasks()) {
+                historyManager.remove(subTaskId);
                 subTasksList.remove(subTaskId);
             }
+            historyManager.remove(id);
             epicsList.remove(id);
         } catch (Exception ex) {
             System.out.println("Эпика с этим ID нет в системе");
