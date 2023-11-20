@@ -3,10 +3,7 @@ package com.yandex.taskTracker.service;
 import com.yandex.taskTracker.model.Node;
 import com.yandex.taskTracker.model.Task;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
@@ -33,6 +30,35 @@ public class InMemoryHistoryManager implements HistoryManager {
             return this.size;
         }
 
+        public Node<T> getFirst() {
+            return head;
+        }
+
+        public Node<T> getLast() {
+            if (tail != null) {
+                return tail;
+            } else {
+                return head;
+            }
+        }
+
+        void removeNode(Node<T> node) {
+            Node<T> temp = head, prev = null;
+            if (temp != null && temp == node) {
+                head = temp.next;
+                return;
+            }
+            while (temp != null && temp != node) {
+                prev = temp;
+                temp = temp.next;
+            }
+            if (temp == null)
+                return;
+
+            prev.next = temp.next;
+            size--;
+        }
+
         public ArrayList<T> getTasks() {
             ArrayList<T> tasksList = new ArrayList<>();
 
@@ -47,28 +73,26 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private static final int TASK_HISTORY_LIST_SIZE = 10;
-    //private LinkedList<Task> tasksHistory = new LinkedList<>();
+
+    private Map<Integer, Node<Task>> tasksListForHistory = new HashMap<>();
+
     private CustomLinkedList<Task> tasksHistory = new CustomLinkedList<>();
 
     @Override
     public void add(Task task) {
-        /*if (task != null) {
-            if (tasksHistory.size() >= TASK_HISTORY_LIST_SIZE) {
-                tasksHistory.removeFirst();
-            }
-            tasksHistory.addLast(task);
-        }*/
+        if (tasksListForHistory.containsKey(task.getId())) {
+            remove(task.getId());
+        }
         tasksHistory.linkLast(task);
-        System.out.println(tasksHistory.getSize());
+        tasksListForHistory.put(task.getId(), tasksHistory.getFirst());
     }
 
     @Override
     public void remove(int id) {
-        /*for (Task task: tasksHistory) {
-            if (task.getId() == id) {
-                tasksHistory.remove(task);
-            }
-        }*/
+        Node<Task> node = tasksListForHistory.get(id);
+        if (node != null) {
+            tasksHistory.removeNode(node);
+        }
     }
 
     @Override

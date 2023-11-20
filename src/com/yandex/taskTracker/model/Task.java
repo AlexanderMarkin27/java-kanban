@@ -2,6 +2,8 @@ package com.yandex.taskTracker.model;
 
 import com.yandex.taskTracker.enums.Status;
 
+import java.util.Objects;
+
 public class Task {
     private String name;
     private String description;
@@ -56,5 +58,14 @@ public class Task {
                 '}';
     }
 
-
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (this.getClass() != obj.getClass()) return false;
+        Task otherTask = (Task) obj;
+        return Objects.equals(name, otherTask.name) &&
+                Objects.equals(description, otherTask.description) &&
+                Objects.equals(status, otherTask.status);
+    }
 }

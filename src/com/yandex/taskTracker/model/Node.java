@@ -1,5 +1,7 @@
 package com.yandex.taskTracker.model;
 
+import java.util.Objects;
+
 public class Node<T> {
     public T data;
     public Node<T> next;
@@ -9,5 +11,16 @@ public class Node<T> {
         this.data = data;
         this.prev = prev;
         this.next = next;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (this.getClass() != obj.getClass()) return false;
+        Node<T> otherNode = (Node<T>) obj;
+        return Objects.equals(data, otherNode.data) &&
+                Objects.equals(prev, otherNode.prev) &&
+                Objects.equals(next, otherNode.next);
     }
 }
