@@ -28,8 +28,6 @@ public class Main {
         manager.getTaskByIndex(indexTask2);
         manager.getTaskByIndex(indexTask1);
 
-
-//        System.out.println(manager.getHistory());
         int indexEpic1 = manager.createEpic(epic1);
         int indexEpic2 = manager.createEpic(epic2);
 
@@ -51,9 +49,15 @@ public class Main {
 
         System.out.println(manager.getHistory());
 
+        System.out.println("Delete Task");
+        manager.deleteTaskByIndex(1);
+
+        System.out.println(manager.getHistory());
+
         manager.deleteEpicByIndex(epic1.getId());
 
         System.out.println(manager.getHistory());
+
 
         manager.deleteTaskByIndex(1);
         System.out.println(manager.getHistory());

@@ -20,7 +20,7 @@ public class Node<T> {
         if (this.getClass() != obj.getClass()) return false;
         Node<T> otherNode = (Node<T>) obj;
         return Objects.equals(data, otherNode.data) &&
-                Objects.equals(prev, otherNode.prev) &&
-                Objects.equals(next, otherNode.next);
+                Objects.equals(prev.data, otherNode.data) &&
+                Objects.equals(next.data, otherNode.next.data);
     }
 }

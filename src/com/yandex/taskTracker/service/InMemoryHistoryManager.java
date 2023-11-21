@@ -7,7 +7,41 @@ import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    public class CustomLinkedList<T> {
+    private static final int TASK_HISTORY_LIST_SIZE = 10;
+
+    private final Map<Integer, Node<Task>> tasksMapForHistory = new HashMap<>();
+
+    private final CustomLinkedList<Task> tasksHistory = new CustomLinkedList<>();
+
+    @Override
+    public void add(Task task) {
+        if (tasksMapForHistory.size() == TASK_HISTORY_LIST_SIZE && !tasksMapForHistory.containsKey(task.getId())) {
+            int firstElementIndex = tasksMapForHistory.keySet().stream().findFirst().get();
+            remove(firstElementIndex);
+        }
+
+        if (tasksMapForHistory.containsKey(task.getId())) {
+            remove(task.getId());
+        }
+        tasksHistory.linkLast(task);
+        tasksMapForHistory.put(task.getId(), tasksHistory.getLast());
+    }
+
+    @Override
+    public void remove(int id) {
+        Node<Task> node = tasksMapForHistory.get(id);
+        if (node != null) {
+            tasksHistory.removeNode(node);
+            tasksMapForHistory.remove(id);
+        }
+    }
+
+    @Override
+    public List<Task> getHistory() {
+        return List.copyOf(tasksHistory.getTasks());
+    }
+
+    public static class CustomLinkedList<T> {
 
         private Node<T> head;
         private Node<T> tail;
@@ -15,23 +49,14 @@ public class InMemoryHistoryManager implements HistoryManager {
         private int size = 0;
 
         public void linkLast(T element) {
-            final Node<T> oldHead = head;
-            final Node<T> newNode = new Node<>(null, element, head);
-            head = newNode;
-            if (oldHead == null) {
-                tail = newNode;
+            final Node<T> last = tail;
+            final Node<T> newNode = new Node<>(last, element, null);
+            tail = newNode;
+            if (last == null) {
+                head = newNode;
             } else {
-                oldHead.prev = newNode;
+                last.next = newNode;
             }
-            size++;
-        }
-
-        public int getSize() {
-            return this.size;
-        }
-
-        public Node<T> getFirst() {
-            return head;
         }
 
         public Node<T> getLast() {
@@ -43,19 +68,20 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
 
         void removeNode(Node<T> node) {
-            Node<T> temp = head, prev = null;
-            if (temp != null && temp == node) {
-                head = temp.next;
-                return;
-            }
-            while (temp != null && temp != node) {
-                prev = temp;
-                temp = temp.next;
-            }
-            if (temp == null)
-                return;
+            Node<T> prev = node.prev;
+            Node<T> next = node.next;
 
-            prev.next = temp.next;
+            if (prev == null) {
+                head = next;
+            } else {
+                prev.next = next;
+            }
+
+            if (next == null) {
+                tail = prev;
+            } else {
+                next.prev = prev;
+            }
             size--;
         }
 
@@ -70,33 +96,5 @@ public class InMemoryHistoryManager implements HistoryManager {
 
             return tasksList;
         }
-    }
-
-    private static final int TASK_HISTORY_LIST_SIZE = 10;
-
-    private Map<Integer, Node<Task>> tasksListForHistory = new HashMap<>();
-
-    private CustomLinkedList<Task> tasksHistory = new CustomLinkedList<>();
-
-    @Override
-    public void add(Task task) {
-        if (tasksListForHistory.containsKey(task.getId())) {
-            remove(task.getId());
-        }
-        tasksHistory.linkLast(task);
-        tasksListForHistory.put(task.getId(), tasksHistory.getFirst());
-    }
-
-    @Override
-    public void remove(int id) {
-        Node<Task> node = tasksListForHistory.get(id);
-        if (node != null) {
-            tasksHistory.removeNode(node);
-        }
-    }
-
-    @Override
-    public List<Task> getHistory() {
-        return List.copyOf(tasksHistory.getTasks());
     }
 }

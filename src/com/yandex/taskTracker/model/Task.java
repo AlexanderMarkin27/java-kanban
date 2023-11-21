@@ -64,8 +64,6 @@ public class Task {
         if (obj == null) return false;
         if (this.getClass() != obj.getClass()) return false;
         Task otherTask = (Task) obj;
-        return Objects.equals(name, otherTask.name) &&
-                Objects.equals(description, otherTask.description) &&
-                Objects.equals(status, otherTask.status);
+        return Objects.equals(id, otherTask.id);
     }
 }
