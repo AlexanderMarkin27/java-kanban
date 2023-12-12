@@ -1,6 +1,7 @@
 package com.yandex.taskTracker.model;
 
 import com.yandex.taskTracker.enums.Status;
+import com.yandex.taskTracker.enums.Type;
 
 import java.util.Objects;
 
@@ -10,10 +11,13 @@ public class Task {
     private Integer id;
     private Status status;
 
+    private final Type type;
+
     public Task(String name, String description, Status status) {
         this.name = name;
         this.description = description;
         this.status = status;
+        this.type = Type.TASK;
     }
 
     public String getName() {
@@ -50,12 +54,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", id=" + id +
-                ", status=" + status +
-                '}';
+        return id + "," + type + "," + name + "," + status + ","  + description;
     }
 
     @Override
