@@ -46,19 +46,16 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Integer createTask(Task task) {
+    public void createTask(Task task) {
         task.setId(getIndex());
         tasksList.put(task.getId(), task);
-        return task.getId();
     }
 
     @Override
-    public Integer updateTask(Task task) {
+    public void updateTask(Task task) {
         if (tasksList.containsKey(task.getId())) {
             tasksList.put(task.getId(), task);
-            return task.getId();
         }
-        return null;
     }
 
     @Override
@@ -98,28 +95,26 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Integer createSubTask(SubTask subTask) {
+    public void createSubTask(SubTask subTask) {
         try {
             subTask.setId(getIndex());
             subTasksList.put(subTask.getId(), subTask);
             Epic epic = epicsList.get(subTask.getEpicId());
             epic.getSubTasks().add(subTask.getId());
             setEpicStatus(epic);
-            return subTask.getId();
         } catch (Exception ex) {
-            return null;
+            System.out.println("Oooops...");
         }
     }
 
     @Override
-    public Integer updateSubTask(SubTask subTask) {
+    public void updateSubTask(SubTask subTask) {
         try {
             subTasksList.put(subTask.getId(), subTask);
             Epic epic = epicsList.get(subTask.getEpicId());
             setEpicStatus(epic);
-            return subTask.getId();
         } catch (Exception ex) {
-            return null;
+            System.out.println("Oooops...");
         }
     }
 
@@ -170,20 +165,18 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Integer createEpic(Epic epic) {
+    public void createEpic(Epic epic) {
         epic.setId(getIndex());
         epicsList.put(epic.getId(), epic);
-        return epic.getId();
     }
 
     @Override
-    public Integer updateEpic(Epic epic) {
+    public void updateEpic(Epic epic) {
         try {
             epicsList.get(epic.getId()).setName(epic.getName());
             epicsList.get(epic.getId()).setDescription(epic.getDescription());
-            return epic.getId();
         } catch (Exception ex) {
-            return null;
+            System.out.println("Oooops...");
         }
     }
 

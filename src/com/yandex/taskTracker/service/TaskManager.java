@@ -13,9 +13,9 @@ public interface TaskManager {
 
     Task getTaskByIndex(int id);
 
-    Integer createTask(Task task);
+    void createTask(Task task);
 
-    Integer updateTask(Task task);
+    void updateTask(Task task);
 
     void deleteTaskByIndex(int id);
 
@@ -25,9 +25,9 @@ public interface TaskManager {
 
     SubTask getSubTaskByIndex(int id);
 
-    Integer createSubTask(SubTask subTask);
+    void createSubTask(SubTask subTask);
 
-    Integer updateSubTask(SubTask subTask);
+    void updateSubTask(SubTask subTask);
 
     void deleteSubTaskByIndex(int id);
 
@@ -37,9 +37,9 @@ public interface TaskManager {
 
     Epic getEpicByIndex(int id);
 
-    Integer createEpic(Epic epic);
+    void createEpic(Epic epic);
 
-    Integer updateEpic(Epic epic);
+    void updateEpic(Epic epic);
 
     void deleteEpicByIndex(int id);
 
