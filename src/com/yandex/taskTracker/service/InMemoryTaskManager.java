@@ -19,6 +19,14 @@ public class InMemoryTaskManager implements TaskManager {
 
     private HistoryManager historyManager = Managers.getDefaultHistory();
 
+    public HistoryManager getHistoryManager() {
+        return historyManager;
+    }
+
+    public void setHistoryManager(HistoryManager historyManager) {
+        this.historyManager = historyManager;
+    }
+
     public InMemoryTaskManager() {
         tasksList = new HashMap<>();
         epicsList = new HashMap<>();

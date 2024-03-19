@@ -1,9 +1,6 @@
 package com.yandex.taskTracker.utils;
 
-import com.yandex.taskTracker.service.HistoryManager;
-import com.yandex.taskTracker.service.InMemoryHistoryManager;
-import com.yandex.taskTracker.service.InMemoryTaskManager;
-import com.yandex.taskTracker.service.TaskManager;
+import com.yandex.taskTracker.service.*;
 
 public class Managers {
     public static TaskManager getDefault() {
@@ -12,5 +9,9 @@ public class Managers {
 
     public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
+    }
+
+    public static FileBackedTaskManager getFileBackedTaskManager() {
+        return new FileBackedTaskManager();
     }
 }
