@@ -23,6 +23,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (tasksMapForHistory.containsKey(task.getId())) {
             remove(task.getId());
         }
+
         tasksHistory.linkLast(task);
         tasksMapForHistory.put(task.getId(), tasksHistory.getLast());
     }

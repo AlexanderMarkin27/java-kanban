@@ -3,16 +3,18 @@ package com.yandex.taskTracker.service;
 import com.yandex.taskTracker.model.Epic;
 import com.yandex.taskTracker.model.SubTask;
 import com.yandex.taskTracker.model.Task;
-import com.yandex.taskTracker.utils.Managers;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
-    private HistoryManager historyManager = Managers.getDefaultHistory();
+    private final File file;
+
+    public FileBackedTaskManager(File file) {
+        this.file = file;
+    }
 
     @Override
     public void deleteAllTasks() {
@@ -88,45 +90,95 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static String historyToString(HistoryManager manager) {
         StringBuilder stringBuilder = new StringBuilder();
+        List<Task> history = manager.getHistory();
 
-        List<Task> tasks = manager.getHistory();
-        for (Task task : tasks) {
-            stringBuilder.append(task.toString()).append(",");
+        for (Task task : history) {
+            stringBuilder.append(task.getId()).append(",");
+        }
+
+        if (!history.isEmpty()) {
+            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         }
 
         return stringBuilder.toString();
     }
 
+    public static List<Integer> historyFromString(String value) {
+        List<Integer> history = new ArrayList<>();
+
+        if (value != null && !value.isEmpty()) {
+            String[] ids = value.split(",");
+            for (String id : ids) {
+                try {
+                    int taskId = Integer.parseInt(id.trim());
+                    history.add(taskId);
+                } catch (NumberFormatException e) {
+                    // Handle parsing error if needed
+                    System.err.println("Failed to parse ID: " + id);
+                }
+            }
+        }
+
+        return history;
+    }
+
+    public void loadFromFile() throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null && !line.isEmpty()) {
+                String[] parts = line.split(",");
+                if (parts.length >= 5) {
+                    String type = parts[1];
+                    switch (type) {
+                        case "Task":
+                            Task task = Task.fromString(line);
+                            createTask(task);
+                            break;
+                        case "Epic":
+                            Epic epic = Epic.fromString(line);
+                            createEpic(epic);
+                            break;
+                        case "SubTask":
+                            SubTask subTask = SubTask.fromString(line);
+                            createSubTask(subTask);
+                            break;
+                    }
+                }
+            }
+
+        }
+    }
+
     private void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("taskManagerData.csv"))) {
-            // Write header
+
             writer.write("id,type,name,status,description,epic");
             writer.newLine();
 
-            // Write tasks
             List<Task> tasks = super.getTasksList();
             for (Task task : tasks) {
                 writer.write(task.toString() + ",");
                 writer.newLine();
             }
 
-            // Write epics
             List<Epic> epics = super.getEpicsList();
             for (Epic epic : epics) {
                 writer.write(epic.toString() + ",");
                 writer.newLine();
             }
 
-            // Write subtasks
             List<SubTask> subTasks = super.getSubTasksList();
             for (SubTask subTask : subTasks) {
                 writer.write(subTask.toString() + ",");
                 writer.newLine();
             }
 
-            writer.write(FileBackedTaskManager.historyToString(historyManager));
+            writer.newLine();
 
-            System.out.println("CSV data is saved in taskManagerData.csv");
+            String historyString = historyToString(this.getHistoryManager());
+            writer.write(historyString + ",");
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }

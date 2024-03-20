@@ -2,6 +2,8 @@ package com.yandex.taskTracker.utils;
 
 import com.yandex.taskTracker.service.*;
 
+import java.io.File;
+
 public class Managers {
     public static TaskManager getDefault() {
         return new InMemoryTaskManager();
@@ -11,7 +13,7 @@ public class Managers {
         return new InMemoryHistoryManager();
     }
 
-    public static FileBackedTaskManager getFileBackedTaskManager() {
-        return new FileBackedTaskManager();
+    public static FileBackedTaskManager getFileBackedTaskManager(File file) {
+        return new FileBackedTaskManager(file);
     }
 }
