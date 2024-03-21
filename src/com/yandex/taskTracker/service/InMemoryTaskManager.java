@@ -33,6 +33,10 @@ public class InMemoryTaskManager implements TaskManager {
         subTasksList = new HashMap<>();
     }
 
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
     /* Функции для задач */
     @Override
     public ArrayList<Task> getTasksList() {
@@ -222,6 +226,11 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
+    private int getIndex() {
+        index++;
+        return index;
+    }
+
     private void setEpicStatus(Epic epic) {
         int statusNewCounter = 0;
         int statusDoneCounter = 0;
@@ -244,10 +253,5 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             epic.setStatus(Status.IN_PROGRESS);
         }
-    }
-
-    private int getIndex() {
-        index++;
-        return index;
     }
 }

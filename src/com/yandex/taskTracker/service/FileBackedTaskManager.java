@@ -113,44 +113,57 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     int taskId = Integer.parseInt(id.trim());
                     history.add(taskId);
                 } catch (NumberFormatException e) {
-                    // Handle parsing error if needed
-                    System.err.println("Failed to parse ID: " + id);
+                    System.err.println("ID: " + id + " не найден");
                 }
             }
         }
-
         return history;
     }
 
     public void loadFromFile() throws IOException {
+        boolean previousLineEmpty = false;
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
-            while ((line = reader.readLine()) != null && !line.isEmpty()) {
-                String[] parts = line.split(",");
-                if (parts.length >= 5) {
-                    String type = parts[1];
-                    switch (type) {
-                        case "Task":
-                            Task task = Task.fromString(line);
-                            createTask(task);
-                            break;
-                        case "Epic":
-                            Epic epic = Epic.fromString(line);
-                            createEpic(epic);
-                            break;
-                        case "SubTask":
-                            SubTask subTask = SubTask.fromString(line);
-                            createSubTask(subTask);
-                            break;
+            while ((line = reader.readLine()) != null) {
+                if (!line.isEmpty()) {
+                    if (previousLineEmpty) {
+                        List<Integer> history = historyFromString(line);
+                        fillHistory(history);
+                        save();
+
+                    } else {
+                        String[] parts = line.split(",");
+                        if (parts.length >= 5) {
+                            String type = parts[1];
+                            switch (type) {
+                                case "TASK":
+                                    Task task = Task.fromString(line);
+                                    createTask(task);
+                                    setIndex(task.getId());
+                                    break;
+                                case "EPIC":
+                                    Epic epic = Epic.fromString(line);
+                                    createEpic(epic);
+                                    setIndex(epic.getId());
+                                    break;
+                                case "SUBTASK":
+                                    SubTask subTask = SubTask.fromString(line);
+                                    createSubTask(subTask);
+                                    setIndex(subTask.getId());
+                                    break;
+                            }
+                        }
                     }
+                    previousLineEmpty = false;
+                } else {
+                    previousLineEmpty = true;
                 }
             }
-
         }
     }
 
     private void save() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("taskManagerData.csv"))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
 
             writer.write("id,type,name,status,description,epic");
             writer.newLine();
@@ -182,5 +195,36 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void fillHistory(List<Integer> ids) {
+        for (int id : ids) {
+            boolean found = false;
+            for (Task task : getTasksList()) {
+                if (task.getId() == id) {
+                    getHistoryManager().add(task);
+                    found = true;
+                    break;
+                }
+            }
+            if (found) continue;
+
+            for (Task task : getEpicsList()) {
+                if (task.getId() == id) {
+                    getHistoryManager().add(task);
+                    found = true;
+                    break;
+                }
+            }
+            if (found) continue;
+
+            for (Task task : getSubTasksList()) {
+                if (task.getId() == id) {
+                    getHistoryManager().add(task);
+                    break;
+                }
+            }
+        }
+
     }
 }
