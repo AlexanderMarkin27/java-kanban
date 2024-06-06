@@ -13,19 +13,11 @@ import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
     private int index = 0;
-    private Map<Integer, Task> tasksList;
-    private Map<Integer, Epic> epicsList;
-    private Map<Integer, SubTask> subTasksList;
+    private final Map<Integer, Task> tasksList;
+    private final Map<Integer, Epic> epicsList;
+    private final Map<Integer, SubTask> subTasksList;
 
     private HistoryManager historyManager = Managers.getDefaultHistory();
-
-    public HistoryManager getHistoryManager() {
-        return historyManager;
-    }
-
-    public void setHistoryManager(HistoryManager historyManager) {
-        this.historyManager = historyManager;
-    }
 
     public InMemoryTaskManager() {
         tasksList = new HashMap<>();
@@ -33,9 +25,6 @@ public class InMemoryTaskManager implements TaskManager {
         subTasksList = new HashMap<>();
     }
 
-    public void setIndex(int index) {
-        this.index = index;
-    }
 
     /* Функции для задач */
     @Override
@@ -53,21 +42,31 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTaskByIndex(int id) {
-        historyManager.add(tasksList.get(id));
-        return tasksList.get(id);
+        Task task = tasksList.get(id);
+        if (task != null) {
+            historyManager.add(tasksList.get(id));
+        }
+        return task;
     }
 
     @Override
-    public void createTask(Task task) {
-        task.setId(getIndex());
+    public Integer createTask(Task task) {
+        if (task.getId() == null) {
+            task.setId(getIndex());
+        } else {
+            index = task.getId();
+        }
         tasksList.put(task.getId(), task);
+        return task.getId();
     }
 
     @Override
-    public void updateTask(Task task) {
+    public Integer updateTask(Task task) {
         if (tasksList.containsKey(task.getId())) {
             tasksList.put(task.getId(), task);
+            return task.getId();
         }
+        return null;
     }
 
     @Override
@@ -102,32 +101,43 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public SubTask getSubTaskByIndex(int id) {
-        historyManager.add(subTasksList.get(id));
-        return subTasksList.get(id);
+        SubTask subTask = subTasksList.get(id);
+        if (subTask != null) {
+            historyManager.add(subTasksList.get(id));
+        }
+        return subTask;
     }
 
     @Override
-    public void createSubTask(SubTask subTask) {
+    public Integer createSubTask(SubTask subTask) {
         try {
-            subTask.setId(getIndex());
+            if (subTask.getId() == null) {
+                subTask.setId(getIndex());
+            } else {
+                index = subTask.getId();
+            }
             subTasksList.put(subTask.getId(), subTask);
             Epic epic = epicsList.get(subTask.getEpicId());
             epic.getSubTasks().add(subTask.getId());
             setEpicStatus(epic);
+            return subTask.getId();
         } catch (Exception ex) {
             System.out.println("Oooops...");
         }
+        return null;
     }
 
     @Override
-    public void updateSubTask(SubTask subTask) {
+    public Integer updateSubTask(SubTask subTask) {
         try {
             subTasksList.put(subTask.getId(), subTask);
             Epic epic = epicsList.get(subTask.getEpicId());
             setEpicStatus(epic);
+            return  subTask.getId();
         } catch (Exception ex) {
             System.out.println("Oooops...");
         }
+        return null;
     }
 
     /**
@@ -172,24 +182,34 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic getEpicByIndex(int id) {
-        historyManager.add(epicsList.get(id));
-        return epicsList.get(id);
+        Epic epic = epicsList.get(id);
+        if (epic != null) {
+            historyManager.add(epicsList.get(id));
+        }
+        return epic;
     }
 
     @Override
-    public void createEpic(Epic epic) {
-        epic.setId(getIndex());
+    public Integer createEpic(Epic epic) {
+        if (epic.getId() == null) {
+            epic.setId(getIndex());
+        } else {
+            index = epic.getId();
+        }
         epicsList.put(epic.getId(), epic);
+        return epic.getId();
     }
 
     @Override
-    public void updateEpic(Epic epic) {
+    public Integer updateEpic(Epic epic) {
         try {
             epicsList.get(epic.getId()).setName(epic.getName());
             epicsList.get(epic.getId()).setDescription(epic.getDescription());
+            return epic.getId();
         } catch (Exception ex) {
             System.out.println("Oooops...");
         }
+        return null;
     }
 
     @Override

@@ -32,7 +32,7 @@ public class Task {
         this.description = description;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -48,29 +48,14 @@ public class Task {
         this.status = status;
     }
 
-//    @Override
-//    public String toString() {
-//        return "Task{" +
-//                "name='" + name + '\'' +
-//                ", description='" + description + '\'' +
-//                ", id=" + id +
-//                ", status=" + status +
-//                '}';
-//    }
-
     @Override
     public String toString() {
-        return id + ",TASK," + name + "," + status + "," + description;
-    }
-
-    public static Task fromString(String value) {
-        String[] parts = value.split(",");
-        if (parts.length != 5) {
-            throw new IllegalArgumentException("Invalid format for Task string");
-        }
-        Task task = new Task(parts[2], parts[4], Status.valueOf(parts[3]));
-        task.setId(Integer.parseInt(parts[0]));
-        return task;
+        return "Task{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", id=" + id +
+                ", status=" + status +
+                '}';
     }
 
     @Override

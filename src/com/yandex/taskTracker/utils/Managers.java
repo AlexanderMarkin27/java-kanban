@@ -3,6 +3,7 @@ package com.yandex.taskTracker.utils;
 import com.yandex.taskTracker.service.*;
 
 import java.io.File;
+import java.io.IOException;
 
 public class Managers {
     public static TaskManager getDefault() {
@@ -13,7 +14,7 @@ public class Managers {
         return new InMemoryHistoryManager();
     }
 
-    public static FileBackedTaskManager getFileBackedTaskManager(File file) {
-        return new FileBackedTaskManager(file);
+    public static FileBackedTaskManager getFileBackedTaskManager(File file, HistoryManager historyManager) throws IOException {
+        return FileBackedTaskManager.getInstance(file, historyManager);
     }
 }
