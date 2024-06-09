@@ -1,13 +1,11 @@
 package com.yandex.taskTracker.service;
 
+import com.yandex.taskTracker.exception.ManagerSaveException;
 import com.yandex.taskTracker.model.Epic;
 import com.yandex.taskTracker.model.SubTask;
 import com.yandex.taskTracker.model.Task;
-import com.yandex.taskTracker.utils.Managers;
-
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
@@ -104,13 +102,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
-    public void loadFromFile() throws IOException {
+    private void loadFromFile() {
         boolean previousLineEmpty = false;
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
-            ArrayList<Task> taskArrayList = getTasksList();
-            ArrayList<Epic> epicArrayList = getEpicsList();
-            ArrayList<SubTask> subTaskArrayList = getSubTasksList();
             List<Integer> history = new ArrayList<>();
             while ((line = reader.readLine()) != null) {
                 if (!line.isEmpty()) {
@@ -123,15 +118,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                             switch (type) {
                                 case "TASK":
                                     Task task = CsvConverter.stringToTask(parts);
-                                    taskArrayList.add(task);
+                                    tasksList.put(task.getId(), task);
                                     break;
                                 case "EPIC":
                                     Epic epic = CsvConverter.stringToEpic(parts);
-                                    epicArrayList.add(epic);
+                                    epicsList.put(epic.getId(), epic);
                                     break;
                                 case "SUBTASK":
                                     SubTask subTask = CsvConverter.stringToSubTask(parts);
-                                    subTaskArrayList.add(subTask);
+                                    subTasksList.put(subTask.getId(), subTask);
                                     break;
                             }
                         }
@@ -141,14 +136,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     previousLineEmpty = true;
                 }
             }
-            epicArrayList.forEach(this::createEpic);
-            taskArrayList.forEach(this::createTask);
-            subTaskArrayList.forEach(this::createSubTask);
-            fillHistory(history, epicArrayList, taskArrayList, subTaskArrayList);
+
+            ArrayList<Task> listOfAllObjectsInFile = getListOfAllObjectsInFile(getEpicsList(), getTasksList(), getSubTasksList());
+
+            index = getMaxId(listOfAllObjectsInFile);
+
+            addSubTasksToEpics(getSubTasksList());
+
+            fillHistory(history, listOfAllObjectsInFile);
+        } catch (IOException e){
+            throw new ManagerSaveException("Ошибка чтения из файла");
         }
     }
 
-    private void save() {
+    private void save(){
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
 
             writer.write("id,type,name,status,description,epic");
@@ -176,19 +177,36 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
             String historyString = CsvConverter.historyToString(this.getHistory());
             writer.write(historyString + ",");
-
-
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ManagerSaveException("Ошибка записи в файл");
         }
     }
 
-    private void fillHistory(List<Integer> ids, ArrayList<Epic> epicArrayList, ArrayList<Task> taskArrayList, ArrayList<SubTask> subTaskArrayList) {
-       ArrayList<Task> tasks = new ArrayList<>(taskArrayList);
-       tasks.addAll(epicArrayList);
-       tasks.addAll(subTaskArrayList);
-
+    private void fillHistory(List<Integer> ids, ArrayList<Task> tasks) {
        tasks.stream().filter(task -> ids.contains(task.getId())).forEach(task -> historyManager.add(task));
+    }
+
+    private Integer getMaxId(ArrayList<Task> tasks) {
+        try {
+            return tasks.stream().max(Comparator.comparing(Task::getId)).get().getId();
+        } catch (NoSuchElementException e) {
+            return 0;
+        }
+
+    }
+
+    private ArrayList<Task> getListOfAllObjectsInFile(ArrayList<Epic> epicArrayList, ArrayList<Task> taskArrayList, ArrayList<SubTask> subTaskArrayList) {
+        ArrayList<Task> tasks = new ArrayList<>(taskArrayList);
+        tasks.addAll(epicArrayList);
+        tasks.addAll(subTaskArrayList);
+        return tasks;
+    }
+
+    private void addSubTasksToEpics(ArrayList<SubTask> subTaskArrayList) {
+        subTaskArrayList.forEach(subTask -> {
+            Epic epic = epicsList.get(subTask.getEpicId());
+            epic.getSubTasks().add(subTask.getId());
+        });
     }
 
 }
