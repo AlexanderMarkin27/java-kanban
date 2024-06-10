@@ -1,6 +1,9 @@
 package com.yandex.taskTracker.model;
 
 import com.yandex.taskTracker.enums.Status;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Epic extends Task{
@@ -8,7 +11,7 @@ public class Epic extends Task{
     private ArrayList<Integer> subTasks;
 
     public Epic(String name, String description) {
-        super(name, description, Status.NEW);
+        super(name, description, Status.NEW, 0, LocalDateTime.now());
         this.subTasks = new ArrayList<>();
     }
 

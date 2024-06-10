@@ -22,11 +22,11 @@ public class CsvConverter {
         return sub.getId() + ",SUBTASK," + sub.getName() + "," + sub.getStatus() + "," + sub.getDescription() + "," + sub.getEpicId();
     }
 
-    public static Task stringToTask(String[] strings) {
-        Task task = new Task(strings[2], strings[4], Status.valueOf(strings[3]));
-        task.setId(Integer.parseInt(strings[0]));
-        return task;
-    }
+//    public static Task stringToTask(String[] strings) {
+//        Task task = new Task(strings[2], strings[4], Status.valueOf(strings[3]));
+//        task.setId(Integer.parseInt(strings[0]));
+//        return task;
+//    }
 
     public static Epic stringToEpic(String[] strings) {
         Epic epic = new Epic(strings[2],strings[4]);
@@ -36,11 +36,11 @@ public class CsvConverter {
         return epic;
     }
 
-    public static SubTask stringToSubTask(String[] strings) {
-        SubTask subTask = new SubTask(strings[2], strings[4], Status.valueOf(strings[3]), Integer.parseInt(strings[5]));
-        subTask.setId(Integer.parseInt(strings[0]));
-        return subTask;
-    }
+//    public static SubTask stringToSubTask(String[] strings) {
+//        SubTask subTask = new SubTask(strings[2], strings[4], Status.valueOf(strings[3]), Integer.parseInt(strings[5]));
+//        subTask.setId(Integer.parseInt(strings[0]));
+//        return subTask;
+//    }
 
     public static String historyToString(List<Task> history) {
         StringBuilder stringBuilder = new StringBuilder();

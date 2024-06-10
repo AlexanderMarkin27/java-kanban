@@ -14,7 +14,7 @@ public class Managers {
         return new InMemoryHistoryManager();
     }
 
-    public static FileBackedTaskManager getFileBackedTaskManager(File file, HistoryManager historyManager) throws IOException {
-        return FileBackedTaskManager.getInstance(file, historyManager);
-    }
+//    public static FileBackedTaskManager getFileBackedTaskManager(File file, HistoryManager historyManager) throws IOException {
+//        return FileBackedTaskManager.getInstance(file, historyManager);
+//    }
 }
