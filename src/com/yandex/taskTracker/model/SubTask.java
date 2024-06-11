@@ -20,6 +20,9 @@ public class SubTask extends Task {
                 ", id=" + this.getId() +
                 ", status=" + this.getStatus() +
                 ", epic=" + this.epicId +
+                ", duration=" + this.getDuration().toMinutes() +
+                ", startTime=" + this.getStartTime() +
+                ", endTime=" + getEndTime() +
                 '}';
     }
 

@@ -17,12 +17,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.historyManager = historyManager;
     }
 
-//    public static FileBackedTaskManager getInstance(File file, HistoryManager historyManager) throws IOException {
-//        FileBackedTaskManager manager = new FileBackedTaskManager(file, historyManager);
-//        manager.loadFromFile();
-//
-//        return manager;
-//    }
+    public static FileBackedTaskManager loadFromFile(File file, HistoryManager historyManager) throws IOException {
+        FileBackedTaskManager manager = new FileBackedTaskManager(file, historyManager);
+        manager.loadFromFile();
+
+        return manager;
+    }
 
     @Override
     public void deleteAllTasks() {
@@ -102,57 +102,57 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
-//    private void loadFromFile() {
-//        boolean previousLineEmpty = false;
-//        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-//            String line;
-//            List<Integer> history = new ArrayList<>();
-//            while ((line = reader.readLine()) != null) {
-//                if (!line.isEmpty()) {
-//                    if (previousLineEmpty) {
-//                        history.addAll(CsvConverter.historyFromString(line));
-//                    } else {
-//                        String[] parts = line.split(",");
-//                        if (parts.length >= 5) {
-//                            String type = parts[1];
-//                            switch (type) {
-//                                case "TASK":
-//                                    Task task = CsvConverter.stringToTask(parts);
-//                                    tasksList.put(task.getId(), task);
-//                                    break;
-//                                case "EPIC":
-//                                    Epic epic = CsvConverter.stringToEpic(parts);
-//                                    epicsList.put(epic.getId(), epic);
-//                                    break;
-//                                case "SUBTASK":
-//                                    SubTask subTask = CsvConverter.stringToSubTask(parts);
-//                                    subTasksList.put(subTask.getId(), subTask);
-//                                    break;
-//                            }
-//                        }
-//                    }
-//                    previousLineEmpty = false;
-//                } else {
-//                    previousLineEmpty = true;
-//                }
-//            }
-//
-//            ArrayList<Task> listOfAllObjectsInFile = getListOfAllObjectsInFile(getEpicsList(), getTasksList(), getSubTasksList());
-//
-//            index = getMaxId(listOfAllObjectsInFile);
-//
-//            addSubTasksToEpics(getSubTasksList());
-//
-//            fillHistory(history, listOfAllObjectsInFile);
-//        } catch (IOException e){
-//            throw new ManagerSaveException("Ошибка чтения из файла");
-//        }
-//    }
+    private void loadFromFile() {
+        boolean previousLineEmpty = false;
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            List<Integer> history = new ArrayList<>();
+            while ((line = reader.readLine()) != null) {
+                if (!line.isEmpty()) {
+                    if (previousLineEmpty) {
+                        history.addAll(CsvConverter.historyFromString(line));
+                    } else {
+                        String[] parts = line.split(",");
+                        if (parts.length >= 5) {
+                            String type = parts[1];
+                            switch (type) {
+                                case "TASK":
+                                    Task task = CsvConverter.stringToTask(parts);
+                                    tasksList.put(task.getId(), task);
+                                    break;
+                                case "EPIC":
+                                    Epic epic = CsvConverter.stringToEpic(parts);
+                                    epicsList.put(epic.getId(), epic);
+                                    break;
+                                case "SUBTASK":
+                                    SubTask subTask = CsvConverter.stringToSubTask(parts);
+                                    subTasksList.put(subTask.getId(), subTask);
+                                    break;
+                            }
+                        }
+                    }
+                    previousLineEmpty = false;
+                } else {
+                    previousLineEmpty = true;
+                }
+            }
+
+            ArrayList<Task> listOfAllObjectsInFile = getListOfAllObjectsInFile(getEpicsList(), getTasksList(), getSubTasksList());
+
+            index = getMaxId(listOfAllObjectsInFile);
+
+            addSubTasksToEpics(getSubTasksList());
+
+            fillHistory(history, listOfAllObjectsInFile);
+        } catch (IOException e){
+            throw new ManagerSaveException("Ошибка чтения из файла");
+        }
+    }
 
     private void save(){
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
 
-            writer.write("id,type,name,status,description,epic");
+            writer.write("id,type,name,status,description,duration,startTime,epic");
             writer.newLine();
 
             List<Task> tasks = super.getTasksList();

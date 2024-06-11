@@ -5,10 +5,10 @@ import com.yandex.taskTracker.model.Epic;
 import com.yandex.taskTracker.model.SubTask;
 import com.yandex.taskTracker.model.Task;
 import com.yandex.taskTracker.utils.Managers;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
     protected int index = 0;
@@ -111,7 +111,7 @@ public class InMemoryTaskManager implements TaskManager {
             subTasksList.put(subTask.getId(), subTask);
             Epic epic = epicsList.get(subTask.getEpicId());
             epic.getSubTasks().add(subTask.getId());
-            setEpicStatus(epic);
+            updateEpicData(epic);
             return subTask.getId();
         } catch (Exception ex) {
             System.out.println("Oooops...");
@@ -124,7 +124,7 @@ public class InMemoryTaskManager implements TaskManager {
         try {
             subTasksList.put(subTask.getId(), subTask);
             Epic epic = epicsList.get(subTask.getEpicId());
-            setEpicStatus(epic);
+            updateEpicData(epic);
             return subTask.getId();
         } catch (Exception ex) {
             System.out.println("Oooops...");
@@ -143,7 +143,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (subTasksList.get(id) != null) {
             int epicId = subTasksList.get(id).getEpicId();
             epicsList.get(epicId).getSubTasks().remove(Integer.valueOf(id));
-            setEpicStatus(epicsList.get(epicId));
+            updateEpicData(epicsList.get(epicId));
             historyManager.remove(id);
             subTasksList.remove(id);
         }
@@ -241,6 +241,12 @@ public class InMemoryTaskManager implements TaskManager {
         return index;
     }
 
+    private void updateEpicData(Epic epic) {
+        setEpicStatus(epic);
+        setEpicDuration(epic);
+        setEpicStartTime(epic);
+    }
+
     private void setEpicStatus(Epic epic) {
         int statusNewCounter = 0;
         int statusDoneCounter = 0;
@@ -263,5 +269,20 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             epic.setStatus(Status.IN_PROGRESS);
         }
+    }
+
+    private void setEpicDuration(Epic epic) {
+        Duration sum = epic.getSubTasks().stream()
+                .map(subTaskId -> subTasksList.get(subTaskId).getDuration())
+                .reduce(Duration.ZERO, Duration::plus);
+        epic.setDuration(sum);
+    }
+
+    private void setEpicStartTime(Epic epic) {
+        Optional<LocalDateTime> earliestStartTime = epic.getSubTasks().stream()
+                .map(subTaskId -> subTasksList.get(subTaskId).getStartTime())
+                .min(LocalDateTime::compareTo);
+
+        earliestStartTime.ifPresent(epic::setStartTime);
     }
 }
