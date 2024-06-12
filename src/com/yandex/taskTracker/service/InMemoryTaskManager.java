@@ -16,13 +16,25 @@ public class InMemoryTaskManager implements TaskManager {
     protected final Map<Integer, Epic> epicsList;
     protected final Map<Integer, SubTask> subTasksList;
 
+    private final Set<Task> prioritizedTasks;
+
     private HistoryManager historyManager = Managers.getDefaultHistory();
 
+    private final Comparator<Task> comparator = new Comparator<Task>() {
+        @Override
+        public int compare(Task t1, Task t2) {
+            return t1.getStartTime().compareTo(t2.getStartTime());
+        }
+    };
+
     public InMemoryTaskManager() {
+        prioritizedTasks = new TreeSet<Task>(comparator);
         tasksList = new HashMap<>();
         epicsList = new HashMap<>();
         subTasksList = new HashMap<>();
     }
+
+
 
 
     /* Функции для задач */
@@ -50,15 +62,23 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Integer createTask(Task task) {
-        task.setId(getIndex());
-        tasksList.put(task.getId(), task);
-        return task.getId();
+        if (!taskHasOverlap(task)) {
+            task.setId(getIndex());
+            tasksList.put(task.getId(), task);
+            addToPrioritizedTaskList(task);
+            return task.getId();
+        }
+        else {
+            return null;
+        }
+
     }
 
     @Override
     public Integer updateTask(Task task) {
-        if (tasksList.containsKey(task.getId())) {
+        if (tasksList.containsKey(task.getId()) && !taskHasOverlap(task)) {
             tasksList.put(task.getId(), task);
+            addToPrioritizedTaskList(task);
             return task.getId();
         }
         return null;
@@ -107,12 +127,16 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Integer createSubTask(SubTask subTask) {
         try {
-            subTask.setId(getIndex());
-            subTasksList.put(subTask.getId(), subTask);
-            Epic epic = epicsList.get(subTask.getEpicId());
-            epic.getSubTasks().add(subTask.getId());
-            updateEpicData(epic);
-            return subTask.getId();
+            if (!taskHasOverlap(subTask)) {
+                subTask.setId(getIndex());
+                subTasksList.put(subTask.getId(), subTask);
+                Epic epic = epicsList.get(subTask.getEpicId());
+                epic.getSubTasks().add(subTask.getId());
+                addToPrioritizedTaskList(subTask);
+                updateEpicData(epic);
+                return subTask.getId();
+            }
+
         } catch (Exception ex) {
             System.out.println("Oooops...");
         }
@@ -122,10 +146,14 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Integer updateSubTask(SubTask subTask) {
         try {
-            subTasksList.put(subTask.getId(), subTask);
-            Epic epic = epicsList.get(subTask.getEpicId());
-            updateEpicData(epic);
-            return subTask.getId();
+            if (!taskHasOverlap(subTask)) {
+                subTasksList.put(subTask.getId(), subTask);
+                Epic epic = epicsList.get(subTask.getEpicId());
+                updateEpicData(epic);
+                addToPrioritizedTaskList(subTask);
+                return subTask.getId();
+            }
+
         } catch (Exception ex) {
             System.out.println("Oooops...");
         }
@@ -236,9 +264,35 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
+    @Override
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(prioritizedTasks);
+    }
+
     private int getIndex() {
         index++;
         return index;
+    }
+
+    private void addToPrioritizedTaskList(Task task) {
+        if (task.getStartTime() != null && !taskHasOverlap(task)) {
+            prioritizedTasks.add(task);
+        }
+    }
+
+    private boolean taskHasOverlap(Task newTask) {
+        boolean hasOverlap = false;
+        for (Task task: prioritizedTasks) {
+            if (!compareTasksCompletionTime(task, newTask)) {
+                hasOverlap = true;
+                break;
+            }
+        }
+        return hasOverlap;
+    }
+
+    private boolean compareTasksCompletionTime(Task t1, Task t2) {
+        return t1.getEndTime().isBefore(t2.getStartTime()) && t2.getEndTime().isBefore(t1.getStartTime());
     }
 
     private void updateEpicData(Epic epic) {

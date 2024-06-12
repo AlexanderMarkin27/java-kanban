@@ -18,7 +18,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         File file = new File("testFile.csv");
 
-        LocalDateTime dateTime1 = LocalDateTime.parse("2024-06-11T21:15:00");
+        LocalDateTime dateTime1 = LocalDateTime.parse("2024-06-11T22:15:00");
 
         LocalDateTime dateTimeSub1 = LocalDateTime.parse("2024-06-11T21:30:00");
         LocalDateTime dateTimeSub2 = LocalDateTime.parse("2024-06-11T21:40:00");
@@ -37,27 +37,33 @@ public class Main {
         Task task2 = new Task("Task 2", "task 2", Status.IN_PROGRESS, 100, dateTimeSub2);
         Task task3 = new Task("Task 3", "task 3", Status.IN_PROGRESS, 1, dateTimeSub1);
         fileBackedTaskManager.createTask(task1);
-        System.out.println(task1.getEndTime());
 
-        Epic epic1 = new Epic("Epic 1", "epic 1");
-        fileBackedTaskManager.createEpic(epic1);
+//        Epic epic1 = new Epic("Epic 1", "epic 1");
+//        fileBackedTaskManager.createEpic(epic1);
 
-        SubTask subTask1 = new SubTask("SubTask 1", "SubTask 1", Status.NEW, epic1.getId(), 5, dateTimeSub2);
-        SubTask subTask2 = new SubTask("SubTask 2", "SubTask 2", Status.NEW, epic1.getId(), 5, dateTimeSub1);
-        SubTask subTask3 = new SubTask("SubTask 2", "SubTask 2", Status.NEW, epic1.getId(), 5, dateTimeSub1);
-
-        fileBackedTaskManager.createSubTask(subTask1);
-
-
-
-        fileBackedTaskManager.createSubTask(subTask2);
-
-
-        fileBackedTaskManager.createSubTask(subTask3);
+//        SubTask subTask1 = new SubTask("SubTask 1", "SubTask 1", Status.NEW, epic1.getId(), 5, dateTimeSub2);
+//        SubTask subTask2 = new SubTask("SubTask 2", "SubTask 2", Status.NEW, epic1.getId(), 5, dateTimeSub1);
+//        SubTask subTask3 = new SubTask("SubTask 2", "SubTask 2", Status.NEW, epic1.getId(), 5, dateTimeSub1);
+//
+//        fileBackedTaskManager.createSubTask(subTask1);
+//
+//
+//
+//        fileBackedTaskManager.createSubTask(subTask2);
+//
+//
+//        fileBackedTaskManager.createSubTask(subTask3);
 
         fileBackedTaskManager.createTask(task2);
         fileBackedTaskManager.createTask(task3);
 
+        System.out.println(fileBackedTaskManager.getPrioritizedTasks());
+
+        Task updatedTask = fileBackedTaskManager.getTaskByIndex(1);
+        updatedTask.setName("updated task");
+
+        fileBackedTaskManager.updateTask(updatedTask);
+        System.out.println(fileBackedTaskManager.getPrioritizedTasks());
 
     }
 }

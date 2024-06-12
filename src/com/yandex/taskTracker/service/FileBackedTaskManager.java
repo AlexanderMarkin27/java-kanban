@@ -13,6 +13,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private HistoryManager historyManager;
 
     private FileBackedTaskManager(File file, HistoryManager historyManager) {
+        super();
         this.file = file;
         this.historyManager = historyManager;
     }
