@@ -43,7 +43,7 @@ public interface TaskManager {
 
     void deleteEpicByIndex(int id);
 
-    ArrayList<SubTask> getSubTasksByEpic(int epicId);
+    List<SubTask> getSubTasksByEpic(int epicId);
 
     List<Task> getHistory();
 
