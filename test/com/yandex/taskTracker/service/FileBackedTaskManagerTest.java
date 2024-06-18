@@ -1,12 +1,16 @@
 package com.yandex.taskTracker.service;
 
+import com.yandex.taskTracker.utils.Managers;
 import org.junit.jupiter.api.Test;
 
-class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager>{
+import java.io.File;
+import java.io.IOException;
+
+class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager>{
 
     @Override
-    protected InMemoryTaskManager createTaskManager() {
-        return new InMemoryTaskManager();
+    protected FileBackedTaskManager createTaskManager() throws IOException {
+        return FileBackedTaskManager.loadFromFile( File.createTempFile("taskManagerData", ".csv"), Managers.getDefaultHistory());
     }
 
     @Override

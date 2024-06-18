@@ -12,6 +12,10 @@ public class SubTask extends Task {
         this.epicId = epicId;
     }
 
+    public void setEpicId(int epicId) {
+        this.epicId = epicId;
+    }
+
     @Override
     public String toString() {
         return  "SubTask{" +

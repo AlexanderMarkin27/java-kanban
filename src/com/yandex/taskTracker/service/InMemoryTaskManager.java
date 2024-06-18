@@ -69,7 +69,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Integer updateTask(Task task) {
+        boolean b =tasksDoNotOverlap(task);
         if (tasksList.containsKey(task.getId()) && tasksDoNotOverlap(task)) {
+            tasksDoNotOverlap(task);
             tasksList.put(task.getId(), task);
             addToPrioritizedTaskList(task);
             return task.getId();
@@ -133,7 +135,7 @@ public class InMemoryTaskManager implements TaskManager {
             }
 
         } catch (Exception ex) {
-            System.out.println("Oooops...");
+            System.out.println("Error create Subtask");
         }
         return null;
     }
@@ -150,7 +152,7 @@ public class InMemoryTaskManager implements TaskManager {
             }
 
         } catch (Exception ex) {
-            System.out.println("Oooops...");
+            System.out.println("Error update subtask");
         }
         return null;
     }
@@ -223,7 +225,7 @@ public class InMemoryTaskManager implements TaskManager {
             epicsList.get(epic.getId()).setDescription(epic.getDescription());
             return epic.getId();
         } catch (Exception ex) {
-            System.out.println("Oooops...");
+            System.out.println("Error update epic");
         }
         return null;
     }
