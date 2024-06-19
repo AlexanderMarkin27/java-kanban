@@ -69,7 +69,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Integer updateTask(Task task) {
-        boolean b =tasksDoNotOverlap(task);
         if (tasksList.containsKey(task.getId()) && tasksDoNotOverlap(task)) {
             tasksDoNotOverlap(task);
             tasksList.put(task.getId(), task);
@@ -285,14 +284,15 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private Predicate<Task> taskOverlap(Task other) {
-        return task -> !(task.getEndTime().isBefore(other.getStartTime())
-                || task.getStartTime().isAfter(other.getEndTime()));
+        return task -> (!(task.getEndTime().isBefore(other.getStartTime())
+                || task.getStartTime().isAfter(other.getEndTime()))) && !Objects.equals(task.getId(), other.getId());
     }
 
     private void updateEpicData(Epic epic) {
         setEpicStatus(epic);
         setEpicDuration(epic);
         setEpicStartTime(epic);
+        calculateEpicEndTime(epic);
     }
 
     private void setEpicStatus(Epic epic) {
@@ -313,6 +313,14 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             epic.setStatus(Status.IN_PROGRESS);
         }
+    }
+
+    private void calculateEpicEndTime(Epic epic) {
+        Optional<LocalDateTime> latestEndTime = epic.getSubTasks().stream()
+                .map(subTaskId -> subTasksList.get(subTaskId).getEndTime())
+                .max(LocalDateTime::compareTo);
+
+        latestEndTime.ifPresent(epic::setEpicEndTime);
     }
 
     private void setEpicDuration(Epic epic) {

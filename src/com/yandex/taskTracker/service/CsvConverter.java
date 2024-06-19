@@ -14,17 +14,17 @@ public class CsvConverter {
 
     public static String taskToString(Task task) {
         return task.getId() + ",TASK," + task.getName() + "," + task.getStatus() + "," + task.getDescription()
-                + "," + task.getDuration().toMinutes() + "," + task.getStartTime();
+                + "," + durationToMinutes(task.getDuration()) + "," + setStartDateTime(task.getStartTime());
     }
 
     public static String taskToString(Epic epic) {
         return epic.getId() + ",EPIC," + epic.getName() + "," + epic.getStatus() + "," + epic.getDescription()
-                + "," + epic.getDuration().toMinutes() + "," + epic.getStartTime();
+                + "," + durationToMinutes(epic.getDuration()) + "," + setStartDateTime(epic.getStartTime());
     }
 
     public static String taskToString(SubTask sub) {
         return sub.getId() + ",SUBTASK," + sub.getName() + "," + sub.getStatus() + "," + sub.getDescription()
-                + "," + sub.getDuration().toMinutes() + "," + sub.getStartTime() + "," + sub.getEpicId();
+                + "," + durationToMinutes(sub.getDuration()) + "," + setStartDateTime(sub.getStartTime()) + "," + sub.getEpicId();
     }
 
     public static Task stringToTask(String[] strings) {
@@ -80,5 +80,13 @@ public class CsvConverter {
             }
         }
         return history;
+    }
+
+    private static long durationToMinutes(Duration duration) {
+        return duration != null ? duration.toMinutes() : 0;
+    }
+
+    private static LocalDateTime setStartDateTime(LocalDateTime dateTime) {
+        return dateTime != null ? dateTime : LocalDateTime.now();
     }
 }
