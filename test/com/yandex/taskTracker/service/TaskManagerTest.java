@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class TaskManagerTest<T extends TaskManager> {
 
-    private T taskManager;
+    protected T taskManager;
     private Task task1;
     private Task task2;
     private Task updatedTask;
@@ -42,27 +42,19 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getTaskListShouldReturnEmptyList() {
+    void getTasksList_returnList_emptyList() {
         assertEquals(taskManager.getTasksList().size(), 0);
     }
 
     @Test
-    void deleteAllTasksShouldReturnEmptyList() {
-        taskManager.createTask(task1);
-        taskManager.createTask(task2);
-        taskManager.deleteAllTasks();
-        assertEquals(taskManager.getTasksList().size(), 0);
-    }
-
-    @Test
-    void getTaskListShouldReturnListWithTwoEntries() {
+    void getTaskList_returnList_twoTasks() {
         taskManager.createTask(task1);
         taskManager.createTask(task2);
         assertEquals(taskManager.getTasksList().size(), 2);
     }
 
     @Test
-    void deleteAllTasksShouldReturnEmptyTaskList() {
+    void deleteAllTasks_returnList_emptyList() {
         taskManager.createTask(task1);
         taskManager.createTask(task2);
         taskManager.deleteAllTasks();
@@ -70,33 +62,27 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void taskByIndexShouldReturnTaskWithSameIndex() {
+    void getTaskByIndex_returnTask_indexOne() {
         taskManager.createTask(task2);
         assertEquals(taskManager.getTaskByIndex(1), task2);
     }
 
     @Test
-    void createdTaskShouldBeInTasksList() {
+    void createTask_addTaskToTasksList() {
         taskManager.createTask(task1);
         assertEquals(taskManager.getTasksList().get(0), task1);
     }
 
     @Test
-    void updateTaskShouldUpdateTaskInList() {
+    void updateTask_updateTaskInList() {
         taskManager.createTask(task1);
-        assertEquals(taskManager.getTasksList().get(0), task1);
+        task2.setId(task1.getId());
+        taskManager.updateTask(task2);
+        assertEquals(taskManager.getTasksList().get(0), task2);
     }
 
     @Test
-    void getSubTaskShouldReturnListOfSubTasks() {
-        taskManager.createTask(task1);
-        updatedTask.setId(task1.getId());
-        taskManager.updateTask(updatedTask);
-        assertEquals(taskManager.getTasksList().get(0), updatedTask);
-    }
-
-    @Test
-    void deleteAllSubTasksShouldDeleteAllSubTasks() {
+    void deleteAllSubTasks_returnSubTaskList_empty() {
         taskManager.createEpic(epic1);
         int epicId = epic1.getId();
         subTask1.setEpicId(epicId);
@@ -108,7 +94,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void deleteAllSubTasksShouldDeleteAllSubTasksInEpic() {
+    void deleteAllSubTasks_deleteSubtasksInEpic() {
         taskManager.createEpic(epic1);
         int epicId = epic1.getId();
         subTask1.setEpicId(epicId);
@@ -120,7 +106,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void subTaskByIndexShouldReturnSubTaskWithSameIndex() {
+    void getSubTaskByIndex_returnSubTask_indexOne() {
         taskManager.createEpic(epic1);
         int epicId = epic1.getId();
         subTask1.setEpicId(epicId);
@@ -129,7 +115,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void createdSubTaskShouldBeInSubTasksList() {
+    void createdSubTask_addSubTaskInSubTasksList() {
         taskManager.createEpic(epic1);
         int epicId = epic1.getId();
         subTask1.setEpicId(epicId);
@@ -138,7 +124,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void updateSubTaskShouldUpdateSubTaskInList() {
+    void updateSubTask_updateSubTaskInList() {
         taskManager.createEpic(epic1);
         int epicId = epic1.getId();
         subTask1.setEpicId(epicId);
@@ -151,26 +137,27 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getEpicsShouldReturnEmptyListOfEpics() {
+    void getEpicsList_returnList_empty() {
         assertEquals(taskManager.getEpicsList().size(), 0);
     }
 
     @Test
-    void getEpicsShouldReturnListOfEpicsWithTwoEntries() {
+    void getEpicsList_returnList_twoEntries() {
         taskManager.createEpic(epic1);
         taskManager.createEpic(epic2);
         assertEquals(taskManager.getEpicsList().size(), 2);
     }
 
     @Test
-    void deleteAllEpicsShouldDeleteAllEpicsInList() {
+    void deleteAllEpics_returnEpicsList_empty() {
         taskManager.createEpic(epic1);
         taskManager.createEpic(epic2);
-        assertEquals(taskManager.getEpicsList().size(), 2);
+        taskManager.deleteAllEpics();
+        assertEquals(taskManager.getEpicsList().size(), 0);
     }
 
     @Test
-    void deleteAllEpicsShouldDeleteAllSubtasksForThisEpic() {
+    void deleteAllEpics_deleteAllSubtasks() {
         taskManager.createEpic(epic1);
         taskManager.createEpic(epic2);
         int epicId1 = epic1.getId();
@@ -186,19 +173,19 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void epicsByIndexShouldReturnEpicWithSameIndex() {
+    void getEpicsByIndex_returnEpic_indexOne() {
         taskManager.createEpic(epic1);
         assertEquals(taskManager.getEpicByIndex(epic1.getId()), epic1);
     }
 
     @Test
-    void createdEpicShouldBeInEpicsList() {
+    void createdEpic_addEpicInEpicsList() {
         taskManager.createEpic(epic1);
         assertEquals(taskManager.getEpicsList().get(0), epic1);
     }
 
     @Test
-    void updateEpicShouldUpdateEpicInList() {
+    void updateEpic_updateEpicInList() {
         taskManager.createEpic(epic1);
         epic2.setId(epic1.getId());
         taskManager.updateEpic(epic2);
@@ -206,7 +193,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void subTaskByEpicShouldReturnAllSubtasksInEpic() {
+    void getSubTasksByEpic_returnAllSubtasksInEpic() {
         taskManager.createEpic(epic1);
         taskManager.createEpic(epic2);
         int epicId1 = epic1.getId();
@@ -218,13 +205,13 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getHistoryShouldReturnEmptyHistoryList() {
+    void getHistory_returnHistoryList_empty() {
         assertEquals(taskManager.getHistory().size(), 0);
 
     }
 
     @Test
-    void getHistoryShouldReturnHistoryListWithTwoEntries() {
+    void getHistory_returnHistoryList_twoEntries() {
         taskManager.createTask(task1);
         taskManager.createEpic(epic1);
         taskManager.getTaskByIndex(task1.getId());
@@ -234,14 +221,14 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getPrioritizedTasksShouldReturnTasksListSortedByStartDate() {
+    void getPrioritizedTasks_returnPrioritizedTasks_sortedByStartDate() {
         taskManager.createTask(task2);
         taskManager.createTask(task1);
         assertEquals(taskManager.getPrioritizedTasks().get(0), task1);
     }
 
     @Test
-    void calculateEpicStatusShouldBeNew() {
+    void calculateEpicStatus_epicWithStatus_new() {
         taskManager.createEpic(epic1);
         int epicId = epic1.getId();
         subTask1.setEpicId(epicId);
@@ -252,7 +239,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void calculateEpicStatusShouldBeDone() {
+    void calculateEpicStatus_epicWithStatus_done() {
         taskManager.createEpic(epic1);
         int epicId = epic1.getId();
         subTask1.setEpicId(epicId);
@@ -265,7 +252,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void calculateEpicStatusShouldBeInProgress() {
+    void calculateEpicStatus_epicWithStatus_inProgress() {
         taskManager.createEpic(epic1);
         int epicId = epic1.getId();
         subTask1.setEpicId(epicId);

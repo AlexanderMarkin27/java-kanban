@@ -14,7 +14,7 @@ public class Task {
     private Duration duration;
     private LocalDateTime startTime;
 
-    public Task(String name, String description, Status status, int durationInMin, LocalDateTime startTime) {
+    public Task(String name, String description, Status status, Integer durationInMin, LocalDateTime startTime) {
         this.name = name;
         this.description = description;
         this.status = status;
@@ -23,7 +23,12 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
-        return startTime.plusMinutes(duration.toMinutes());
+        try {
+            return startTime.plusMinutes(duration.toMinutes());
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
     public String getName() {

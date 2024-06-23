@@ -1,6 +1,7 @@
 package com.yandex.taskTracker.service;
 
 import com.yandex.taskTracker.enums.Status;
+import com.yandex.taskTracker.exception.TaskTimeOverlapException;
 import com.yandex.taskTracker.model.Epic;
 import com.yandex.taskTracker.model.SubTask;
 import com.yandex.taskTracker.model.Task;
@@ -55,25 +56,27 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Integer createTask(Task task) {
-        if (tasksDoNotOverlap(task)) {
+        try {
+            checkTimeOverlap(task);
             task.setId(getIndex());
             tasksList.put(task.getId(), task);
             addToPrioritizedTaskList(task);
             return task.getId();
+        } catch (TaskTimeOverlapException e) {
+            System.out.println(e.getMessage());
         }
-        else {
-            return null;
-        }
-
+        return null;
     }
 
     @Override
     public Integer updateTask(Task task) {
-        if (tasksList.containsKey(task.getId()) && tasksDoNotOverlap(task)) {
-            tasksDoNotOverlap(task);
+        try {
+            checkTimeOverlap(task);
             tasksList.put(task.getId(), task);
             addToPrioritizedTaskList(task);
             return task.getId();
+        } catch (TaskTimeOverlapException e) {
+            System.out.println(e.getMessage());
         }
         return null;
     }
@@ -122,19 +125,21 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Integer createSubTask(SubTask subTask) {
-        try {
-            if (tasksDoNotOverlap(subTask)) {
-                subTask.setId(getIndex());
-                subTasksList.put(subTask.getId(), subTask);
-                Epic epic = epicsList.get(subTask.getEpicId());
-                epic.getSubTasks().add(subTask.getId());
-                addToPrioritizedTaskList(subTask);
-                updateEpicData(epic);
-                return subTask.getId();
-            }
+        Epic epic = epicsList.get(subTask.getEpicId());
+        if (epic == null) {
+            return null;
+        }
 
-        } catch (Exception ex) {
-            System.out.println("Error create Subtask");
+        try {
+            checkTimeOverlap(subTask);
+            subTask.setId(getIndex());
+            subTasksList.put(subTask.getId(), subTask);
+            epic.getSubTasks().add(subTask.getId());
+            addToPrioritizedTaskList(subTask);
+            updateEpicData(epic);
+            return subTask.getId();
+        } catch (TaskTimeOverlapException e) {
+            System.out.println(e.getMessage());
         }
         return null;
     }
@@ -142,16 +147,14 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Integer updateSubTask(SubTask subTask) {
         try {
-            if (tasksDoNotOverlap(subTask)) {
-                subTasksList.put(subTask.getId(), subTask);
-                Epic epic = epicsList.get(subTask.getEpicId());
-                updateEpicData(epic);
-                addToPrioritizedTaskList(subTask);
-                return subTask.getId();
-            }
-
-        } catch (Exception ex) {
-            System.out.println("Error update subtask");
+            checkTimeOverlap(subTask);
+            subTasksList.put(subTask.getId(), subTask);
+            Epic epic = epicsList.get(subTask.getEpicId());
+            updateEpicData(epic);
+            addToPrioritizedTaskList(subTask);
+            return subTask.getId();
+        } catch (TaskTimeOverlapException e) {
+            System.out.println(e.getMessage());
         }
         return null;
     }
@@ -274,13 +277,15 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void addToPrioritizedTaskList(Task task) {
-        if (task.getStartTime() != null && tasksDoNotOverlap(task)) {
+        if (task.getStartTime() != null) {
             prioritizedTasks.add(task);
         }
     }
 
-    private boolean tasksDoNotOverlap(Task newTask) {
-        return prioritizedTasks.stream().noneMatch(taskOverlap(newTask));
+    private void checkTimeOverlap(Task newTask) throws TaskTimeOverlapException {
+        if (newTask.getStartTime() == null ||prioritizedTasks.stream().anyMatch(taskOverlap(newTask))) {
+            throw new TaskTimeOverlapException("Time overlap");
+        }
     }
 
     private Predicate<Task> taskOverlap(Task other) {

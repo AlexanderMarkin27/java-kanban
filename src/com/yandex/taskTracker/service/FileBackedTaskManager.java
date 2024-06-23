@@ -4,6 +4,7 @@ import com.yandex.taskTracker.exception.ManagerSaveException;
 import com.yandex.taskTracker.model.Epic;
 import com.yandex.taskTracker.model.SubTask;
 import com.yandex.taskTracker.model.Task;
+
 import java.io.*;
 import java.util.*;
 
@@ -33,15 +34,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public Integer createTask(Task task) {
-        int id = super.createTask(task);
-        save();
+        Integer id = super.createTask(task);
+        if (id != null) {
+            save();
+        }
         return id;
     }
 
     @Override
     public Integer updateTask(Task task) {
-        int id = super.updateTask(task);
-        save();
+        Integer id = super.updateTask(task);
+        if (id != null) {
+            save();
+        }
         return id;
     }
 
@@ -59,15 +64,21 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public Integer createSubTask(SubTask subTask) {
-        int id = super.createSubTask(subTask);
-        save();
+        Integer id = super.createSubTask(subTask);
+        if (id != null) {
+            save();
+        }
         return id;
+
+
     }
 
     @Override
     public Integer updateSubTask(SubTask subTask) {
-        int id = super.updateSubTask(subTask);
-        save();
+        Integer id = super.updateSubTask(subTask);
+        if (id != null) {
+            save();
+        }
         return id;
     }
 
@@ -85,15 +96,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public Integer createEpic(Epic epic) {
-        int id = super.createEpic(epic);
-        save();
+        Integer id = super.createEpic(epic);
+        if (id != null) {
+            save();
+        }
         return id;
     }
 
     @Override
     public Integer updateEpic(Epic epic) {
-        int id = super.updateEpic(epic);
-        save();
+        Integer id = super.updateEpic(epic);
+        if (id != null) {
+            save();
+        }
         return id;
     }
 
@@ -145,12 +160,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             addSubTasksToEpics(getSubTasksList());
 
             fillHistory(history, listOfAllObjectsInFile);
-        } catch (IOException e){
+        } catch (IOException e) {
             throw new ManagerSaveException("Ошибка чтения из файла");
         }
     }
 
-    private void save(){
+    private void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
 
             writer.write("id,type,name,status,description,duration,startTime,epic");
@@ -184,7 +199,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private void fillHistory(List<Integer> ids, ArrayList<Task> tasks) {
-       tasks.stream().filter(task -> ids.contains(task.getId())).forEach(task -> historyManager.add(task));
+        tasks.stream().filter(task -> ids.contains(task.getId())).forEach(task -> historyManager.add(task));
     }
 
     private Integer getMaxId(ArrayList<Task> tasks) {

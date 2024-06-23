@@ -1,177 +1,35 @@
 package com.yandex.taskTracker.service;
 
+import com.yandex.taskTracker.enums.Status;
+import com.yandex.taskTracker.model.Task;
 import com.yandex.taskTracker.utils.Managers;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager>{
 
+    File file = new File("testFile.csv");
     @Override
     protected FileBackedTaskManager createTaskManager() throws IOException {
-        return FileBackedTaskManager.loadFromFile( File.createTempFile("taskManagerData", ".csv"), Managers.getDefaultHistory());
+        return FileBackedTaskManager.loadFromFile( File.createTempFile("taskManagerData", ".csv"),
+                 Managers.getDefaultHistory());
     }
 
-    @Override
+
     @Test
-    void getTaskListShouldReturnEmptyList() {
-        super.getTaskListShouldReturnEmptyList();
+    void saveInFile_taskSaved_taskLoadedFromFile() throws IOException {
+        FileBackedTaskManager manager = FileBackedTaskManager.loadFromFile(file, Managers.getDefaultHistory());
+        Task task1 = new Task("Task 1", "task 1", Status.NEW, 45, LocalDateTime.now());
+        manager.createTask(task1);
+
+        FileBackedTaskManager manager1 = FileBackedTaskManager.loadFromFile(file, Managers.getDefaultHistory());
+        assertEquals(manager1.getTaskByIndex(task1.getId()), task1);
     }
 
-    @Override
-    @Test
-    void deleteAllTasksShouldReturnEmptyList() {
-        super.deleteAllTasksShouldReturnEmptyList();
-    }
 
-    @Override
-    @Test
-    void getTaskListShouldReturnListWithTwoEntries() {
-        super.getTaskListShouldReturnListWithTwoEntries();
-    }
-
-    @Override
-    @Test
-    void deleteAllTasksShouldReturnEmptyTaskList() {
-        super.deleteAllTasksShouldReturnEmptyTaskList();
-    }
-
-    @Override
-    @Test
-    void taskByIndexShouldReturnTaskWithSameIndex() {
-        super.taskByIndexShouldReturnTaskWithSameIndex();
-    }
-
-    @Override
-    @Test
-    void createdTaskShouldBeInTasksList() {
-        super.createdTaskShouldBeInTasksList();
-    }
-
-    @Override
-    @Test
-    void updateTaskShouldUpdateTaskInList() {
-        super.updateTaskShouldUpdateTaskInList();
-    }
-
-    @Override
-    @Test
-    void getSubTaskShouldReturnListOfSubTasks() {
-        super.getSubTaskShouldReturnListOfSubTasks();
-    }
-
-    @Override
-    @Test
-    void deleteAllSubTasksShouldDeleteAllSubTasks() {
-        super.deleteAllSubTasksShouldDeleteAllSubTasks();
-    }
-
-    @Override
-    @Test
-    void deleteAllSubTasksShouldDeleteAllSubTasksInEpic() {
-        super.deleteAllSubTasksShouldDeleteAllSubTasksInEpic();
-    }
-
-    @Override
-    @Test
-    void subTaskByIndexShouldReturnSubTaskWithSameIndex() {
-        super.subTaskByIndexShouldReturnSubTaskWithSameIndex();
-    }
-
-    @Override
-    @Test
-    void createdSubTaskShouldBeInSubTasksList() {
-        super.createdSubTaskShouldBeInSubTasksList();
-    }
-
-    @Override
-    @Test
-    void updateSubTaskShouldUpdateSubTaskInList() {
-        super.updateSubTaskShouldUpdateSubTaskInList();
-    }
-
-    @Override
-    @Test
-    void getEpicsShouldReturnEmptyListOfEpics() {
-        super.getEpicsShouldReturnEmptyListOfEpics();
-    }
-
-    @Override
-    @Test
-    void getEpicsShouldReturnListOfEpicsWithTwoEntries() {
-        super.getEpicsShouldReturnListOfEpicsWithTwoEntries();
-    }
-
-    @Override
-    @Test
-    void deleteAllEpicsShouldDeleteAllEpicsInList() {
-        super.deleteAllEpicsShouldDeleteAllEpicsInList();
-    }
-
-    @Override
-    @Test
-    void deleteAllEpicsShouldDeleteAllSubtasksForThisEpic() {
-        super.deleteAllEpicsShouldDeleteAllSubtasksForThisEpic();
-    }
-
-    @Override
-    @Test
-    void epicsByIndexShouldReturnEpicWithSameIndex() {
-        super.epicsByIndexShouldReturnEpicWithSameIndex();
-    }
-
-    @Override
-    @Test
-    void createdEpicShouldBeInEpicsList() {
-        super.createdEpicShouldBeInEpicsList();
-    }
-
-    @Override
-    @Test
-    void updateEpicShouldUpdateEpicInList() {
-        super.updateEpicShouldUpdateEpicInList();
-    }
-
-    @Override
-    @Test
-    void subTaskByEpicShouldReturnAllSubtasksInEpic() {
-        super.subTaskByEpicShouldReturnAllSubtasksInEpic();
-    }
-
-    @Override
-    @Test
-    void getHistoryShouldReturnEmptyHistoryList() {
-        super.getHistoryShouldReturnEmptyHistoryList();
-    }
-
-    @Override
-    @Test
-    void getHistoryShouldReturnHistoryListWithTwoEntries() {
-        super.getHistoryShouldReturnHistoryListWithTwoEntries();
-    }
-
-    @Override
-    @Test
-    void getPrioritizedTasksShouldReturnTasksListSortedByStartDate() {
-        super.getPrioritizedTasksShouldReturnTasksListSortedByStartDate();
-    }
-
-    @Override
-    @Test
-    void calculateEpicStatusShouldBeNew() {
-        super.calculateEpicStatusShouldBeNew();
-    }
-
-    @Override
-    @Test
-    void calculateEpicStatusShouldBeDone() {
-        super.calculateEpicStatusShouldBeDone();
-    }
-
-    @Override
-    @Test
-    void calculateEpicStatusShouldBeInProgress() {
-        super.calculateEpicStatusShouldBeInProgress();
-    }
 }
