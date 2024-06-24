@@ -2,6 +2,8 @@ package com.yandex.taskTracker.model;
 
 import com.yandex.taskTracker.enums.Status;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Task {
@@ -9,11 +11,24 @@ public class Task {
     private String description;
     private Integer id;
     private Status status;
+    private Duration duration;
+    private LocalDateTime startTime;
 
-    public Task(String name, String description, Status status) {
+    public Task(String name, String description, Status status, Integer durationInMin, LocalDateTime startTime) {
         this.name = name;
         this.description = description;
         this.status = status;
+        this.duration = Duration.ofMinutes(durationInMin);
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        try {
+            return startTime.plusMinutes(duration.toMinutes());
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
     public String getName() {
@@ -55,7 +70,26 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", id=" + id +
                 ", status=" + status +
+                ", duration=" + duration.toMinutes() +
+                ", startTime=" + startTime +
+                ", endTime=" + getEndTime() +
                 '}';
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
     }
 
     @Override

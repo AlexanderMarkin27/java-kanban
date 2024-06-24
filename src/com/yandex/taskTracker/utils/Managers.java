@@ -15,6 +15,6 @@ public class Managers {
     }
 
     public static FileBackedTaskManager getFileBackedTaskManager(File file, HistoryManager historyManager) throws IOException {
-        return FileBackedTaskManager.getInstance(file, historyManager);
+        return FileBackedTaskManager.loadFromFile(file, historyManager);
     }
 }

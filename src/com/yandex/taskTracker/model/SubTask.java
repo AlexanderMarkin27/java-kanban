@@ -2,11 +2,17 @@ package com.yandex.taskTracker.model;
 
 import com.yandex.taskTracker.enums.Status;
 
+import java.time.LocalDateTime;
+
 public class SubTask extends Task {
     private int epicId;
 
-    public SubTask(String name, String description, Status status, int epicId) {
-        super(name, description, status);
+    public SubTask(String name, String description, Status status, int epicId, Integer durationInMinutes, LocalDateTime startTime) {
+        super(name, description, status, durationInMinutes, startTime);
+        this.epicId = epicId;
+    }
+
+    public void setEpicId(int epicId) {
         this.epicId = epicId;
     }
 
@@ -18,6 +24,9 @@ public class SubTask extends Task {
                 ", id=" + this.getId() +
                 ", status=" + this.getStatus() +
                 ", epic=" + this.epicId +
+                ", duration=" + this.getDuration().toMinutes() +
+                ", startTime=" + this.getStartTime() +
+                ", endTime=" + getEndTime() +
                 '}';
     }
 
