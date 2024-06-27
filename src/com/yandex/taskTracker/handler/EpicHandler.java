@@ -27,16 +27,11 @@ public class EpicHandler extends BaseHttpHandler {
     @Override
     protected void handleGet(HttpExchange exchange) throws IOException {
         String[] pathParts = exchange.getRequestURI().getPath().split("/");
-        switch (pathParts.length) {
-            case 1 -> handleAllEpicsGetRequest(exchange);
-            case 3 -> {
-                if (pathParts[2].equals("subtasks")) {
-                    handleEpicAllSubtasksGetRequest(exchange, pathParts[1]);
-                } else {
-                    handleSingleEpicGetRequest(exchange, pathParts[1]);
-                }
-            }
-            default -> handleSingleEpicGetRequest(exchange, pathParts[1]);
+
+        switch (pathParts[pathParts.length - 1]) {
+            case "epics" -> handleAllEpicsGetRequest(exchange);
+            case "subtasks" -> handleEpicAllSubtasksGetRequest(exchange, pathParts[pathParts.length - 2]);
+            default -> handleSingleEpicGetRequest(exchange, pathParts[pathParts.length - 1]);
         }
     }
 
@@ -70,9 +65,9 @@ public class EpicHandler extends BaseHttpHandler {
     protected void handleDelete(HttpExchange exchange) throws IOException {
         String[] pathParts = exchange.getRequestURI().getPath().split("/");
 
-        if (pathParts.length > 1) {
+        if (pathParts.length > 2) {
             try {
-                int index = Integer.parseInt(pathParts[1]);
+                int index = Integer.parseInt(pathParts[2]);
                 taskManager.deleteEpicByIndex(index);
                 sendResponseCode(exchange, NO_CONTENT);
             } catch (NumberFormatException e) {

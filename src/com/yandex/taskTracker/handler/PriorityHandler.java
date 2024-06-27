@@ -9,12 +9,11 @@ import java.io.IOException;
 import static com.yandex.taskTracker.enums.HttpResponseCode.BAD_REQUEST;
 import static com.yandex.taskTracker.enums.HttpResponseCode.NOT_ALLOWED;
 
-public class HistoryHandler extends BaseHttpHandler {
-
+public class PriorityHandler extends BaseHttpHandler {
     private final TaskManager taskManager;
     private final Gson objectMapper;
 
-    public HistoryHandler(TaskManager taskManager, Gson objectMapper) {
+    public PriorityHandler(TaskManager taskManager, Gson objectMapper) {
         this.taskManager = taskManager;
         this.objectMapper = objectMapper;
     }
@@ -23,8 +22,8 @@ public class HistoryHandler extends BaseHttpHandler {
     protected void handleGet(HttpExchange exchange) throws IOException {
         String[] pathParts = exchange.getRequestURI().getPath().split("/");
 
-        if (pathParts[pathParts.length - 1].equals("history")) {
-            sendText(exchange, objectMapper.toJson(taskManager.getHistory()));
+        if (pathParts[pathParts.length - 1].equals("prioritized")) {
+            sendText(exchange, objectMapper.toJson(taskManager.getPrioritizedTasks()));
         } else {
             sendResponseCode(exchange, BAD_REQUEST);
         }

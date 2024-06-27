@@ -10,6 +10,8 @@ public enum HttpResponseCode {
     UNAUTHORIZED(401, "Unauthorized"),
     FORBIDDEN(403, "Forbidden"),
     NOT_FOUND(404, "Not Found"),
+
+    NOT_ALLOWED(405, "Not Allowed"),
     NOT_ACCEPTABLE(406, "Not Acceptable"),
     UNSUPPORTED_MEDIA_TYPE(415, "Unsupported Media Type"),
 

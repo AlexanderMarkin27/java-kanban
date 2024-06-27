@@ -1,14 +1,21 @@
 package com.yandex.taskTracker.handler;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import com.sun.net.httpserver.HttpExchange;
+import com.yandex.taskTracker.adapter.DurationAdapter;
+import com.yandex.taskTracker.adapter.LocalDateTimeAdapter;
 import com.yandex.taskTracker.exception.TaskTimeOverlapException;
+import com.yandex.taskTracker.model.Epic;
 import com.yandex.taskTracker.model.Task;
+import com.yandex.taskTracker.service.CsvConverter;
 import com.yandex.taskTracker.service.TaskManager;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 import static com.yandex.taskTracker.enums.HttpResponseCode.*;
 
@@ -25,16 +32,20 @@ public class TaskHandler extends BaseHttpHandler {
     protected void handleGet(HttpExchange exchange) throws IOException {
         String[] pathParts = exchange.getRequestURI().getPath().split("/");
 
-        if (pathParts.length > 1) {
-            handleSingleTaskGetRequest(exchange, pathParts[1]);
+        if (pathParts.length > 2) {
+            handleSingleTaskGetRequest(exchange, pathParts[2]);
         } else {
             handleAllTasksGetRequest(exchange);
         }
     }
 
     protected void handlePost(HttpExchange exchange) throws IOException {
+        InputStream inputStream = exchange.getRequestBody();
+        String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+
         try {
-            Task task = objectMapper.fromJson(new InputStreamReader(exchange.getRequestBody()), Task.class);
+            Task task = objectMapper.fromJson(body, Task.class);
+            System.out.println(task);
 
             if (task.getId() != null) {
                 try {
@@ -60,9 +71,9 @@ public class TaskHandler extends BaseHttpHandler {
     protected void handleDelete(HttpExchange exchange) throws IOException {
         String[] pathParts = exchange.getRequestURI().getPath().split("/");
 
-        if (pathParts.length > 1) {
+        if (pathParts.length > 2) {
             try {
-                int index = Integer.parseInt(pathParts[1]);
+                int index = Integer.parseInt(pathParts[2]);
                 taskManager.deleteTaskByIndex(index);
                 sendResponseCode(exchange, NO_CONTENT);
             } catch (NumberFormatException e) {

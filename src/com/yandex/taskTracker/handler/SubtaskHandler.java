@@ -27,8 +27,8 @@ public class SubtaskHandler extends BaseHttpHandler {
     protected void handleGet(HttpExchange exchange) throws IOException {
         String[] pathParts = exchange.getRequestURI().getPath().split("/");
 
-        if (pathParts.length > 1) {
-            handleSingleSubTaskGetRequest(exchange, pathParts[1]);
+        if (pathParts.length > 2) {
+            handleSingleSubTaskGetRequest(exchange, pathParts[2]);
         } else {
             handleAllSubTasksGetRequest(exchange);
         }
@@ -63,9 +63,9 @@ public class SubtaskHandler extends BaseHttpHandler {
     @Override
     protected void handleDelete(HttpExchange exchange) throws IOException {
         String[] pathParts = exchange.getRequestURI().getPath().split("/");
-        if (pathParts.length > 1) {
+        if (pathParts.length > 2) {
             try {
-                int index = Integer.parseInt(pathParts[1]);
+                int index = Integer.parseInt(pathParts[2]);
                 taskManager.deleteSubTaskByIndex(index);
                 sendResponseCode(exchange, NO_CONTENT);
             } catch (NumberFormatException e) {
