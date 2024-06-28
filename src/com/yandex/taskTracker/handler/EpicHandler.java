@@ -8,7 +8,9 @@ import com.yandex.taskTracker.model.Epic;
 import com.yandex.taskTracker.service.TaskManager;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import static com.yandex.taskTracker.enums.HttpResponseCode.*;
@@ -37,8 +39,11 @@ public class EpicHandler extends BaseHttpHandler {
 
     @Override
     protected void handlePost(HttpExchange exchange) throws IOException {
+        InputStream inputStream = exchange.getRequestBody();
+        String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+
         try {
-            Epic epic = objectMapper.fromJson(new InputStreamReader(exchange.getRequestBody()), Epic.class);
+            Epic epic = objectMapper.fromJson(body, Epic.class);
 
             if (epic.getId() != null) {
                 try {

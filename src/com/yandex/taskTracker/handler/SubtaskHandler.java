@@ -9,7 +9,9 @@ import com.yandex.taskTracker.model.Task;
 import com.yandex.taskTracker.service.TaskManager;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 import static com.yandex.taskTracker.enums.HttpResponseCode.*;
 import static com.yandex.taskTracker.enums.HttpResponseCode.NOT_ACCEPTABLE;
@@ -36,8 +38,11 @@ public class SubtaskHandler extends BaseHttpHandler {
 
     @Override
     protected void handlePost(HttpExchange exchange) throws IOException {
+        InputStream inputStream = exchange.getRequestBody();
+        String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+
         try {
-            SubTask subTask = objectMapper.fromJson(new InputStreamReader(exchange.getRequestBody()), SubTask.class);
+            SubTask subTask = objectMapper.fromJson(body, SubTask.class);
 
             if (subTask.getId() != null) {
                 try {

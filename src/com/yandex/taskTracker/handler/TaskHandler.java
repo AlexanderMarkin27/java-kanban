@@ -45,7 +45,6 @@ public class TaskHandler extends BaseHttpHandler {
 
         try {
             Task task = objectMapper.fromJson(body, Task.class);
-            System.out.println(task);
 
             if (task.getId() != null) {
                 try {
