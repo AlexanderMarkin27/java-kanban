@@ -32,11 +32,11 @@ public abstract class BaseHttpHandler implements HttpHandler {
 
     public void handle(HttpExchange exchange) throws IOException {
         String requestMethod = exchange.getRequestMethod();
-        if (HttpMethod.POST.getMethod().equals(requestMethod)) {
+        if (HttpMethod.POST.name().equals(requestMethod)) {
             handlePost(exchange);
-        } else if (HttpMethod.GET.getMethod().equals(requestMethod)) {
+        } else if (HttpMethod.GET.name().equals(requestMethod)) {
             handleGet(exchange);
-        } else if (HttpMethod.DELETE.getMethod().equals(requestMethod)) {
+        } else if (HttpMethod.DELETE.name().equals(requestMethod)) {
             handleDelete(exchange);
         }
     }
